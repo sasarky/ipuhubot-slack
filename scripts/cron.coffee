@@ -6,7 +6,7 @@ module.exports = (robot) ->
         response.send msg
 
 # *(sec) *(min) *(hour) *(day) *(month) *(day of the week)
-    new cronJob('0 45 23 * * *', () ->
+    new cronJob('0 48 23 * * *', () ->
         currentTime = new Date
         send '#ipuhubot', "日付も変わったし寝ようね"
     ).start()
