@@ -9,7 +9,6 @@
 
 module.exports = (robot) ->
   robot.respond /PING$/i, (msg) ->
-    msg.send msg.message.room
     msg.send "PONG"
 
   robot.respond /HI$/i, (msg) ->
