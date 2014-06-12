@@ -23,3 +23,5 @@ module.exports = (robot) ->
         ipukun = new Ipukun
         emotion = msg.match[1]
         msg.send ipukun.emote(emotion)
+    robot.hear /nemui|眠い/, (msg) ->
+        msg.send '無理しないで寝よっ！'
