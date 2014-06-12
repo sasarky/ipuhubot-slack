@@ -6,5 +6,5 @@ module.exports = (robot) ->
 
 # *(sec) *(min) *(hour) *(day) *(month) *(day of the week)
     new cronJob('* * * * * *', () ->
-        send '#ipuhubot', "日付も変わったし寝ようね"
+        send 'ipuhubot', "日付も変わったし寝ようね"
     ).start()
