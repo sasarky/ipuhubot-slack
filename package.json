@@ -24,7 +24,9 @@
     "hubot": ">= 2.6.0 < 3.0.0",
     "hubot-scripts": ">= 2.5.0 < 3.0.0",
     "hubot-slack": "^2.1.0",
-    "hubot-sushiyuki": "0.0.2"
+    "hubot-sushiyuki": "0.0.2",
+    "printf": "^0.2.0",
+    "underscore": "^1.6.0"
   },
   "engines": {
     "node": "0.10.29",
