@@ -29,4 +29,4 @@ module.exports = (robot) ->
         msg.send '無理しないで寝よっ！'
 
     robot.hear /疲れた|つかれた/, (msg) ->
-        msg.send 'お疲れ様！https://raw.githubusercontent.com/sasarky/ipuhubot/master/images/99.png'
+        msg.send 'お疲れ様！ https://raw.githubusercontent.com/sasarky/ipuhubot/master/images/99.png'
