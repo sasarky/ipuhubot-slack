@@ -5,8 +5,8 @@ module.exports = (robot) ->
         robot.messageRoom(room, msg)
 
 # *(sec) *(min) *(hour) *(day) *(month) *(day of the week)
-    new cronJob('0 46 1 * * *', () ->
-        send "#general", "てすとなんだな"
+    new cronJob('0 0 0 * * *', () ->
+        send "#general", "夜更かししちゃだめだぞ"
     ).start()
 
     new cronJob('0 0 9 * * *', () ->
