@@ -6,6 +6,7 @@
     yabai
 ### ipukun upgrade
     IPU君は自分で進化するのだ！
+    ほんとか？
 
 # Development
 ## New Plugins
