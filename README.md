@@ -3,6 +3,7 @@
 ## 機能一覧
 ### ipukun emotion
 	sugoi
+    yabai
 
 # Development
 ## New Plugins
