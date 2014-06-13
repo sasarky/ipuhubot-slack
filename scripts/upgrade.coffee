@@ -13,4 +13,4 @@ module.exports = (robot) ->
                 for commit in info.commits 
                     msg.send "[#{cnt}] #{commit.commit.message} (#{commit.commit.committer.name}): #{commit.html_url}"
                     cnt++
-                msg.send "この進化素材で進化しちゃうよ？"
+                msg.send "この進化素材で進化しちゃうよ？ ( #{url_api_base}/repos/sasarky/ipuhubot/compare/master...develop )"
