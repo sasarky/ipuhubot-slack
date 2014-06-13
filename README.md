@@ -4,6 +4,8 @@
 ### ipukun emotion
 	sugoi
     yabai
+### ipukun upgrade
+    IPU君は自分で進化するのだ！
 
 # Development
 ## New Plugins
