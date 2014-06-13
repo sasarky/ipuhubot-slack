@@ -5,6 +5,9 @@ module.exports = (robot) ->
 
     robot.respond /UPGRADE$/i, (msg) ->
         # ホントは pull request は関係ないんだけどまずはためしで
+        github.get "#{url_api_base}/repos/sasarky/ipuhubot/compare/master...develop", (diff) ->
+            console.log(diff)
+
         github.get "#{url_api_base}/repos/sasarky/ipuhubot/pulls", (pulls) ->
             if pulls.length == 0
                 summary = "進化素材がないみたい。。。"
