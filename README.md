@@ -1,5 +1,8 @@
 # IPUHubot
     IPU君 BOT だよ
+## 機能一覧
+### ipukun emotion
+	sugoi
 
 # Development
 ## New Plugins
@@ -7,4 +10,3 @@
 
 ## Testing Hubot Locally
     $ bin/hubot
-
