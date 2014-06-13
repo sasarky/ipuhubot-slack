@@ -5,12 +5,12 @@ module.exports = (robot) ->
 
     robot.respond /UPGRADE$/i, (msg) ->
         # ホントは pull request は関係ないんだけどまずはためしで
-        github.get "#{url_api_base}/repos/sasarky/ipuhubot/compare/master...develop", (diff) ->
-            console.log(diff)
-
-        github.get "#{url_api_base}/repos/sasarky/ipuhubot/pulls", (pulls) ->
-            if pulls.length == 0
-                summary = "進化素材がないみたい。。。"
+        github.get "#{url_api_base}/repos/sasarky/ipuhubot/compare/master...develop", (info) ->
+            if (info.commits.length == 0)
+                msg.send "進化素材が足りないよ"
             else
-                summary = "進化素材が揃ってる！！！"
-            msg.send summary
+                cnt = 1
+                for commit in info.commits 
+                    msg.send "[#{cnt}] #{commit.commit.message} (#{commit.commit.committer.name}): #{commit.html_url}"
+                    cnt++
+                msg.send "この進化素材で進化しちゃうよ？"
