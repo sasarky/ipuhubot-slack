@@ -8,9 +8,15 @@
     IPU君は自分で進化するのだ！
     ほんとか？
 
-# Development
-## New Plugins
+# 開発方法
+## 新機能追加
     /script の下に配置すれば勝手に読み込んでくれるっぽい
-
-## Testing Hubot Locally
+## ローカルでのテスト方法
     $ bin/hubot
+## 開発の流れ
+### feature branch きって
+    git checkout -b feature/hogefuga
+### develop branch に pull req を送ってレビューしてもらう
+    on the web !!
+### そしたらあとは適当に
+    頑張る
