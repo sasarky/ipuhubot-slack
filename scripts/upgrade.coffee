@@ -25,5 +25,5 @@ module.exports = (robot) ->
         min   = d.getMinutes()
         date = "#{year}-#{month}-#{day} #{hour}:#{min}"
 
-        github.branches("develop").merge "#{date}", (mergeCommit) ->
+        github.branches("sasarky/ipuhubot").merge "develop", (branches) ->
             msg.send("進化したよ！")
