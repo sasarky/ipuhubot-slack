@@ -27,3 +27,7 @@ module.exports = (robot) ->
     msg.send "Goodbye, cruel world."
     process.exit 0
 
+  robot.respond /whisper (.*) (.*)$/i, (msg) ->
+    room = msg.match[1]
+    kotoba = msg.match[2]
+    robot.messageRoom(room, kotoba)
