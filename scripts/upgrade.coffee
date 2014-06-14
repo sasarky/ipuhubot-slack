@@ -10,20 +10,15 @@ module.exports = (robot) ->
             else
                 cnt = 1
                 for commit in info.commits 
+                    if /^Merge pull request/.exec(commit.commit.message)?
+                        continue
                     msg.send "[#{cnt}] #{commit.commit.message} (#{commit.commit.committer.name}): #{commit.html_url}"
                     cnt++
                 msg.send "この進化素材で進化しちゃうよ？ ( https://github.com/sasarky/ipuhubot/compare/master...develop )"
 
+
     robot.respond /UPGRADE\sEXECUTE$/i, (msg) ->
         msg.send "ぶおおおおおおおおん"
-
-        d = new Date
-        year  = d.getFullYear()
-        month = d.getMonth() + 1
-        day  = d.getDate()
-        hour  = d.getHours()
-        min   = d.getMinutes()
-        date = "#{year}-#{month}-#{day} #{hour}:#{min}"
 
         github.branches("sasarky/ipuhubot").merge "develop", (branches) ->
             msg.send("進化したよ！")
