@@ -19,5 +19,7 @@
     git checkout -b feature/hogefuga
 ### develop branch に pull req を送ってレビューしてもらう
     on the web !!
+### Circle CI でテストが走る
+    ようになるはず
 ### そしたらあとは適当に
     頑張る
