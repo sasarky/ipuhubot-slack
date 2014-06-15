@@ -5,7 +5,7 @@
 #   hubot ping - Reply with pong
 #   hubot echo <text> - Reply back with <text>
 #   hubot time - Reply with current time
-#   hubot die - End hubot process
+#   hubot whisper <channel> <txt> - send message to channel
 
 module.exports = (robot) ->
   robot.respond /PING$/i, (msg) ->
