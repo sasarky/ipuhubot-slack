@@ -4,5 +4,5 @@ deployment:
         heroku:
             appname: ipuhubot
 test:
-    override:
+    post:
         - echo hoge
