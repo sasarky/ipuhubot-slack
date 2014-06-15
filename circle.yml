@@ -3,6 +3,3 @@ deployment:
         branch: master
         heroku:
             appname: ipuhubot
-test:
-    post:
-        - echo hoge
