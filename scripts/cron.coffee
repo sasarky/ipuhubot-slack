@@ -9,14 +9,14 @@ module.exports = (robot) ->
         send "#general", "夜更かししちゃだめだぞ"
     ).start()
 
-    new cronJob('0 0 9 * * *', () ->
+    new cronJob('0 0 9 * * 1,2,3,4,5', () ->
         send "#general", "今日も一日がんばりましょー！"
     ).start()
 
-    new cronJob('0 0 12 * * *', () ->
+    new cronJob('0 0 12 * * 1,2,3,4,5', () ->
         send "#general", "午後も張り切っていこー！"
     ).start()
 
-    new cronJob('0 0 18 * * *', () ->
+    new cronJob('0 0 18 * * 1,2,3,4,5', () ->
         send "#general", "今日も一日お疲れ様！"
     ).start()
