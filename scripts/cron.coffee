@@ -1,14 +1,22 @@
+# Description:
+#   ipukun の Cronjob 機能
+#
+
 cronJob = require('cron').CronJob
- 
+
 module.exports = (robot) ->
     send = (room, msg) ->
         robot.messageRoom(room, msg)
 
 # *(sec) *(min) *(hour) *(day) *(month) *(day of the week)
+
+# {{{ Daily
     new cronJob('0 0 0 * * *', () ->
         send "#general", "夜更かししちゃだめだぞ"
     ).start()
+# }}}
 
+# {{{ WeekDay
     new cronJob('0 0 9 * * 1,2,3,4,5', () ->
         send "#general", "今日も一日がんばりましょー！"
     ).start()
@@ -20,3 +28,4 @@ module.exports = (robot) ->
     new cronJob('0 0 18 * * 1,2,3,4,5', () ->
         send "#general", "今日も一日お疲れ様！"
     ).start()
+# }}}

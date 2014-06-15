@@ -1,3 +1,10 @@
+# Description:
+#   Ipukun の Deploy 周りの機能
+#
+# Commands:
+#   hubot upgrade prepare - show diff master..develop
+#   hubot upgrade execute - merge develop, build (check) @Circle CI and deploy Heroku
+
 module.exports = (robot) ->
     github = require('githubot')(robot)
     unless (url_api_base = process.env.HUBOT_GITHUB_API)?
