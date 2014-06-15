@@ -3,3 +3,6 @@ deployment:
         branch: master
         heroku:
             appname: ipuhubot
+test:
+    override:
+        - echo hoge
