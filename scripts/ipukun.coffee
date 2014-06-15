@@ -11,9 +11,12 @@ _ = require 'underscore'
 class Ipukun
     emotionMap:
         hello: 0
+        happybirthday: 98
+        hbd: 98
 
     emote: (emotion) ->
-        return "https://raw.githubusercontent.com/sasarky/ipuhubot/master/images/00.png"
+        s = printf '%02d', @emotionMap[emotion]
+        return "https://raw.githubusercontent.com/sasarky/ipuhubot/master/images/#{s}.png"
 
     emotions: ->
         _.keys @emotionMap
@@ -26,6 +29,7 @@ module.exports = (robot) ->
         msg.send ipukun.emote(emotion)
 
 # for shachiku
+# XXX: これはここじゃないほうがいいかもしれない
     robot.hear /nemui|眠い/, (msg) ->
         msg.send '無理しないで寝よっ！'
 
