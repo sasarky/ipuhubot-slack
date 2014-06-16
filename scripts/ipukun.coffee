@@ -45,3 +45,7 @@ module.exports = (robot) ->
             else
                 msg.send 'error'
         )
+
+    robot.hear /(.*?)/, (msg) ->
+        res = ["おぉ", "スゴイ！", "そう", "えっと", "…", "ガーン", "嬉しい", "楽しい", "かっこいい！", "感心です", "嬉しい"];
+        msg.send res[Math.floor(Math.random() * res.length)];
