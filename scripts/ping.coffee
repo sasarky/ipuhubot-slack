@@ -7,6 +7,8 @@
 #   hubot time - Reply with current time
 #   hubot whisper <channel> <txt> - send message to channel
 
+printf = require 'printf'
+
 module.exports = (robot) ->
   robot.respond /PING$/i, (msg) ->
     msg.send "PONG"
@@ -21,7 +23,11 @@ module.exports = (robot) ->
     msg.send msg.match[1]
 
   robot.respond /TIME$/i, (msg) ->
-    msg.send "Server time is: #{new Date()}"
+    d = new Date
+    hour = d.getHours()
+    minute = d.getMinutes()
+    img = printf "http://www.bijint.com/iwate/tokei_images/%s%s.jpg", hour, minute
+    msg.send img
 
   robot.respond /DIE$/i, (msg) ->
     msg.send "Goodbye, cruel world."
