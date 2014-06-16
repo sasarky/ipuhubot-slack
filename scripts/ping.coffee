@@ -26,7 +26,7 @@ module.exports = (robot) ->
     d = new Date
     hour = d.getHours()
     minute = d.getMinutes()
-    img = printf "http://www.bijint.com/iwate/tokei_images/%s%s.jpg", hour, minute
+    img = printf "http://www.bijint.com/iwate/tokei_images/%02d%02d.jpg", hour, minute
     msg.send img
 
   robot.respond /DIE$/i, (msg) ->
