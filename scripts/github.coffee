@@ -19,7 +19,7 @@ module.exports = (robot) ->
             cnt++
     robot.respond /ADD ISSUE (.*) (.*)$/i, (msg) ->
         # 行頭および行末の ' もしくは " を削除
-        title = msg.match[1].replace(/^[\'\"]/, '').replace(/[\'\"]$/, '')
-        body = msg.match[2].replace(/^[\'\"]/, '').replace(/[\'\"]$/, '')
+        title = msg.match[1].replace(/^[\'\"]|[\'\"]$/g, '')
+        body = msg.match[2].replace(/^[\'\"]|[\'\"]$/g, '')
         github.post "#{url_api_base}/repos/sasarky/ipuhubot/issues", {title: title, body: body}, (issue) ->
             console.log issue
