@@ -4,13 +4,12 @@
 # Commands:
 #   hubot gal - show gal img
 
-request = require 'request'
+tumblr = require('../src/class/ipuhubot-tumblr')
 
 module.exports = (robot) ->
   robot.respond /gal/i, (msg) ->
-    token = process.env.HUBOT_TUMBLR_TOKEN
-    url = "http://api.tumblr.com/v2/blog/mincang.tumblr.com/posts/photo?api_key=#{token}"
-    request.get(url, (error, response, body) ->
-      # alt_sizes[0] ¤Ï³ä¤ê¤È¤Ç¤«¤¤¤Î¤Ç [1] ¤ò»È¤¦
+    tumblr.get('/blog/mincang.tumblr.com/posts/photo', (err, body) ->
+      # alt_sizes[0] ã¯å‰²ã‚Šã¨ã§ã‹ã„ã®ã§ [1] ã‚’ä½¿ã†
       msg.send msg.random(JSON.parse(body)['response']['posts'])['photos'][0]['alt_sizes'][1]['url']
     )
+
