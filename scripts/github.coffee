@@ -3,6 +3,7 @@
 #
 # Commands:
 #   hubot issue list - show issues list
+#   hubot add issue <title> <body> - post issue
 
 github = require 'githubot'
 printf = require 'printf'
