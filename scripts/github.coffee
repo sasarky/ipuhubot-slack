@@ -17,3 +17,9 @@ module.exports = (robot) ->
           for issue in issues
             msg.send printf "[%d] %s ( %s ) By %s", cnt, issue['title'], issue['html_url'], issue['user']['login']
             cnt++
+    robot.respond /ADD ISSUE (.*) (.*)$/i, (msg) ->
+        # 行頭および行末の ' もしくは " を削除
+        title = msg.match[1].replace(/^[\'\"]/, '').replace(/[\'\"]$/, '')
+        body = msg.match[2].replace(/^[\'\"]/, '').replace(/[\'\"]$/, '')
+        github.post "#{url_api_base}/repos/sasarky/ipuhubot/issues", {title: title, body: body}, (issue) ->
+            console.log issue
