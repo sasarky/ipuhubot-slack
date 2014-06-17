@@ -23,3 +23,4 @@ module.exports = (robot) ->
         body = msg.match[2].replace(/^[\'\"]|[\'\"]$/g, '')
         github.post "#{url_api_base}/repos/sasarky/ipuhubot/issues", {title: title, body: body}, (issue) ->
             console.log issue
+            msg.send "ありがとう！issue #{issue.number} 「#{issue.title}」 を発行したよ！ #{issue.html_url}"
