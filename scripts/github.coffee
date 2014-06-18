@@ -33,3 +33,8 @@ module.exports = (robot) ->
         github.get "#{url_api_base}/repos/sasarky/ipuhubot/contributors", (info) ->
           for i in info
             msg.send printf "%s: %d", i.login, i.contributions
+
+    robot.respond /OCTOCAT$/i, (msg) ->
+        base_url = "https://octodex.github.com"
+        github.get "https://octodexapi.herokuapp.com", (info) ->
+            msg.send "#{base_url}#{msg.random(info)['image']}"
