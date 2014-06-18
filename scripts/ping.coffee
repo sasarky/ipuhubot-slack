@@ -12,8 +12,7 @@ request = require 'request'
 
 module.exports = (robot) ->
   robot.respond /PING$/i, (msg) ->
-    user_name = msg.message['user']['name']
-    msg.send "これは #{user_name} の発言です"
+    msg.send "PONG"
 
   robot.respond /HI$/i, (msg) ->
     msg.send "やあ！ぼくの名前はいぷ君だよ"
