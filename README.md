@@ -21,3 +21,4 @@
 
 # その他
     Happy Hacking
+    ごめんなさい
