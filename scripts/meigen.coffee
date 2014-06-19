@@ -12,4 +12,4 @@ module.exports = (robot) ->
           msg.send "No meigen No Life"
           return
 
-        msg.send "#{meigen.meigen} by #{meigen.author}"
+        msg.send "#{meigen.meigen} by #{meigen.author}\n#{meigen.image}"
