@@ -1,8 +1,8 @@
 deployment:
     production:
         branch: master
-        heroku:
-            appname: ipuhubot
+        commands:
+         - ./tools/deploy.sh
 test:
     post:
         - echo hoge
