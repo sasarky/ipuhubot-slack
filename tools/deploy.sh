@@ -1,5 +1,3 @@
 #/bin/sh
 
-ssh sasarky@sasarky.net;
-cd ipuhubot;
-git pull;
+git pull --rebase origin master;
