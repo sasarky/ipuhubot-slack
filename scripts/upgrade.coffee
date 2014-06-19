@@ -52,4 +52,5 @@ module.exports = (robot) ->
                 msg.send "進化しました！"
                 callback(null)
         ], (err) ->
-            process.exit()
+            msg.send "owari"
+          #process.exit()
