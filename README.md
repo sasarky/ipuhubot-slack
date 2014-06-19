@@ -18,3 +18,6 @@
     on the web !!
 ### そしたらあとは適当に
     頑張る
+
+# その他
+    Happy Hacking
