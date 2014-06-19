@@ -31,12 +31,16 @@ module.exports = (robot) ->
         async.waterfall [
             (callback) ->
                 msg.send "ごごごごごごご"
-                callback(null)
+                setTimeout(() ->
+                  callback(null)
+                , 1000)
             ,
             (callback) ->
                 github.branches("sasarky/ipuhubot").merge "develop", (branches) ->
                     msg.send("進化の準備が整いました")
-                    callback(null)
+                    setTimeout(() ->
+                      callback(null)
+                    , 1000)
             ,
             (callback) ->
                 child_process.exec 'git pull', (error, stdout, stderr) ->
@@ -45,12 +49,17 @@ module.exports = (robot) ->
                     else
                         msg.send "ぶおおおおおおおん！！！！"
                         msg.send stdout
-                        msg.send "バージョンアップ適合中です"
-                    callback(null)
+                    setTimeout(() ->
+                      callback(null)
+                    , 1000)
             ,
             (callback) ->
-                msg.send "進化しました！"
-                callback(null)
+                msg.send "適合中です"
+                setTimeout(() ->
+                  callback(null)
+                , 1000)
         ], (err) ->
-            msg.send "owari"
-          #process.exit()
+            msg.send "進化しました！"
+            setTimeout(() ->
+              process.exit()
+            , 10000)
