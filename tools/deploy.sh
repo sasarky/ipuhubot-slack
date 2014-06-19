@@ -1,4 +1,4 @@
 #/bin/sh
 
 uname -a
-git pull --rebase origin master;
+ssh -oStrictHostKeyChecking=no sasarky@sasarky.net "cd /home/sasarky/ipuhubot/; git pull --rebase origin master"
