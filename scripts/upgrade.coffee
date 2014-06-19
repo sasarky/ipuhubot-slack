@@ -44,6 +44,12 @@ module.exports = (robot) ->
                         msg.send "失敗しちゃった。。。"
                     else
                         msg.send "ぶおおおおおおおん！！！！"
-                        msg.send "進化しました！！！"
-                        process.exit()
-        ]
+                        msg.send stdout
+                        msg.send "バージョンアップ適合中です"
+                    callback(null)
+            ,
+            (callback) ->
+                msg.send "進化しました！"
+                callback(null)
+        ], (err) ->
+            process.exit()

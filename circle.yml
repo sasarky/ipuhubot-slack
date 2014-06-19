@@ -1,8 +1,3 @@
-deployment:
-    production:
-        branch: master
-        commands:
-         - /bin/sh ./tools/deploy.sh
 test:
     post:
         - echo hoge
