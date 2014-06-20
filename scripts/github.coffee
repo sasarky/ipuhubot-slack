@@ -18,7 +18,7 @@ module.exports = (robot) ->
           for issue in issues
             msg.send printf "[#%d] %s ( %s ) By %s", issue['number'], issue['title'], issue['html_url'], issue['user']['login']
 
-    robot.respond /ADD ISSUE (.*) (.*)$/i, (msg) ->
+    robot.respond /ADD\sISSUE (.*) (.*)$/i, (msg) ->
         # 行頭および行末の ' もしくは " を削除
         title = msg.match[1].replace(/^[\'\"]|[\'\"]$/g, '')
         body = msg.match[2].replace(/^[\'\"]|[\'\"]$/g, '')
@@ -26,8 +26,12 @@ module.exports = (robot) ->
             console.log issue
             msg.send "ありがとう！issue #{issue.number} 「#{issue.title}」 を発行したよ！ #{issue.html_url}"
 
+    robot.respond /CLOSE\sISSUE\s(\d*)$/i, (msg) ->
+        num = msg.match[1]
+        github.patch "#{url_api_base}/repos/sasarky/ipuhubot/issues/#{num}", {state: 'closed'}, (issue) ->
+            msg.send "おめでとう！issue #{issue.number} 「#{issue.title}」 を完了したよ！ #{issue.html_url}"
+
     robot.respond /CONTRIBUTORS$/i, (msg) ->
-        committers = []
         github.get "#{url_api_base}/repos/sasarky/ipuhubot/contributors", (info) ->
           for i in info
             msg.send printf "%s: %d", i.login, i.contributions
