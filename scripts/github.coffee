@@ -13,12 +13,10 @@ module.exports = (robot) ->
     unless (url_api_base = process.env.HUBOT_GITHUB_API)?
         url_api_base = "https://api.github.com"
 
-    robot.respond /ISSUE\sLIST$/i, (msg) ->
+    robot.respond /ISSUES$/i, (msg) ->
         github.get "#{url_api_base}/repos/sasarky/ipuhubot/issues", (issues) ->
-          cnt = 1
           for issue in issues
-            msg.send printf "[%d] %s ( %s ) By %s", cnt, issue['title'], issue['html_url'], issue['user']['login']
-            cnt++
+            msg.send printf "[#%d] %s ( %s ) By %s", issue['number'], issue['title'], issue['html_url'], issue['user']['login']
 
     robot.respond /ADD ISSUE (.*) (.*)$/i, (msg) ->
         # 行頭および行末の ' もしくは " を削除
@@ -28,7 +26,7 @@ module.exports = (robot) ->
             console.log issue
             msg.send "ありがとう！issue #{issue.number} 「#{issue.title}」 を発行したよ！ #{issue.html_url}"
 
-    robot.respond /COMMITTER\sLIST$/i, (msg) ->
+    robot.respond /CONTRIBUTORS$/i, (msg) ->
         committers = []
         github.get "#{url_api_base}/repos/sasarky/ipuhubot/contributors", (info) ->
           for i in info
