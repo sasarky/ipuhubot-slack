@@ -8,6 +8,7 @@
 #   hubot whisper <channel> <txt> - send message to channel
 
 printf = require 'printf'
+request = require 'request'
 
 module.exports = (robot) ->
   robot.respond /PING$/i, (msg) ->
@@ -37,3 +38,18 @@ module.exports = (robot) ->
     room = msg.match[1]
     kotoba = msg.match[2]
     robot.messageRoom(room, kotoba)
+
+  robot.hear /nemui|眠い/, (msg) ->
+    msg.send '無理しないで寝よっ！'
+
+  robot.hear /疲れた|つかれた/, (msg) ->
+    msg.send 'お疲れ様！ https://raw.githubusercontent.com/sasarky/ipuhubot/master/images/99.png'
+
+  robot.hear /ひま|暇/, (msg) ->
+    request.get("https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&q=http://b.hatena.ne.jp/hotentry/it.rss", (error, response, body) ->
+      if response.statusCode is 200
+        data = msg.random(JSON.parse(body)['responseData']['feed']['entries'])
+        msg.send "これでも読んでみたら？\n " + data['title'] + "\n" + data['link']
+      else
+        msg.send 'error'
+    )

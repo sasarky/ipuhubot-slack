@@ -1,13 +1,9 @@
 # IPUHubot
     IPU君 BOT だよ
 ## 機能一覧
-### ipukun emotion
-	sugoi
-    yabai
 ### ipukun upgrade
     IPU君は自分で進化するのだ！
-    ほんとか？
-    もうちょっとがんばろう
+### iroiro
 
 # 開発方法
 ## 新機能追加
@@ -15,11 +11,14 @@
 ## ローカルでのテスト方法
     $ bin/hubot
 ## 開発の流れ
-### feature branch きって
+### feature branch 作成
+    @develop branch の派生で作成してください
     git checkout -b feature/hogefuga
 ### develop branch に pull req を送ってレビューしてもらう
     on the web !!
-### Circle CI でテストが走る
-    ようになるはず
 ### そしたらあとは適当に
     頑張る
+
+# その他
+    Happy Hacking
+    ごめんなさい

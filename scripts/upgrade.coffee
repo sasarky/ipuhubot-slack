@@ -5,6 +5,9 @@
 #   hubot upgrade prepare - show diff master..develop
 #   hubot upgrade execute - merge develop, build (check) @Circle CI and deploy Heroku
 
+async = require('async')
+child_process = require 'child_process'
+
 module.exports = (robot) ->
     github = require('githubot')(robot)
     unless (url_api_base = process.env.HUBOT_GITHUB_API)?
@@ -25,7 +28,38 @@ module.exports = (robot) ->
 
 
     robot.respond /UPGRADE\sEXECUTE$/i, (msg) ->
-        msg.send "ぶおおおおおおおおん"
-
-        github.branches("sasarky/ipuhubot").merge "develop", (branches) ->
-            msg.send("進化したよ！")
+        async.waterfall [
+            (callback) ->
+                msg.send "ごごごごごごご"
+                setTimeout(() ->
+                  callback(null)
+                , 1000)
+            ,
+            (callback) ->
+                github.branches("sasarky/ipuhubot").merge "develop", (branches) ->
+                    msg.send("進化の準備が整いました")
+                    setTimeout(() ->
+                      callback(null)
+                    , 1000)
+            ,
+            (callback) ->
+                child_process.exec 'git pull', (error, stdout, stderr) ->
+                    if error
+                        msg.send "失敗しちゃった。。。"
+                    else
+                        msg.send "ぶおおおおおおおん！！！！"
+                        msg.send stdout
+                    setTimeout(() ->
+                      callback(null)
+                    , 1000)
+            ,
+            (callback) ->
+                msg.send "適合中です"
+                setTimeout(() ->
+                  callback(null)
+                , 1000)
+        ], (err) ->
+            msg.send "進化しました！"
+            setTimeout(() ->
+              process.exit()
+            , 10000)

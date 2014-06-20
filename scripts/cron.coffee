@@ -3,6 +3,7 @@
 #
 
 cronJob = require('cron').CronJob
+meigen = require('../src/class/ipuhubot-meigen')
 
 module.exports = (robot) ->
     send = (room, msg) ->
@@ -19,6 +20,12 @@ module.exports = (robot) ->
 # {{{ WeekDay
     new cronJob('0 0 9 * * 1,2,3,4,5', () ->
         send "#general", "今日も一日がんばりましょー！"
+        meigen.get('', (body) ->
+            if body == 'error'
+                send "#general", "No meigen No Life"
+            else
+                send "#general", "#{body.meigen} by #{body.author}\n#{body.image}"
+        )
     ).start()
 
     new cronJob('0 0 12 * * 1,2,3,4,5', () ->
