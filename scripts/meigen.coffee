@@ -3,13 +3,13 @@
 #
 # Commands:
 #   hubot meigen  - Return meigen at random.
-module.exports = (robot) ->
-  robot.respond /(meigen)/i, (msg) ->
-    robot.http("http://meigen.o-bit.biz/api")
-      .get() (err, res, body) ->
-        meigen = JSON.parse(body)
-        unless meigen?
-          msg.send "No meigen No Life"
-          return
+meigen = require('../src/class/ipuhubot-meigen')
 
-        msg.send "#{meigen.meigen} by #{meigen.author}\n#{meigen.image}"
+module.exports = (robot) ->
+    robot.respond /MEIGEN/i, (msg) ->
+        meigen.get('', (body) ->
+            if body == 'error'
+                msg.send "No meigen No Life"
+            else
+                msg.send "#{body.meigen} by #{body.author}\n#{body.image}"
+        )
