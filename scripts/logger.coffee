@@ -2,7 +2,7 @@
 #   Logs all message
 #
 
-fs = require "fs";
+fs = require "fs"
 dateformat = require "dateformat"
 hubot = require "hubot"
 
@@ -11,6 +11,7 @@ module.exports = (robot) ->
 
 log_message = (robot, response) ->
   timestamp = dateformat(new Date(), "yyyy-mm-dd HH:MM:ss")
-  message = "#{response.message.user.name}\t#{response.message.user.room}\t#{timestamp}\t#{response.message.text}\n"
+  message = "#{timestamp}\t#{response.message.user.name}\t#{response.message.user.room}\t#{response.message.text}\n"
 
-  fs.appendFile('./logs/message.log', message ,'utf8')
+  # XXX: ここは env でもたせたい
+  fs.appendFile('/home/sasarky/logs/message.log', message ,'utf8')
