@@ -30,7 +30,8 @@
     "cron": "*",
     "printf": "^0.2.0",
     "request": "*",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "dateformat": "*"
   },
   "engines": {
     "node": "0.10.29",
