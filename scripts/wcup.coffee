@@ -2,7 +2,7 @@
 #   Messing around with the WCup API.
 #
 # Commands:
-#   hubot wcup  - Return  at random.
+#   hubot wcup today - Return  WCup today's matches.
 wcup = require('../src/class/ipuhubot-wcup')
 
 module.exports = (robot) ->
