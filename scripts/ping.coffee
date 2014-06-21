@@ -31,7 +31,6 @@ module.exports = (robot) ->
     msg.send img
 
   robot.respond /DIE$/i, (msg) ->
-    user = msg.message['user']['name']
     if robot.auth.hasRole(msg.envelope.user,'admin')
       msg.send "Goodbye, cruel world."
       process.exit 0
