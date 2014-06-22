@@ -43,6 +43,9 @@ module.exports = (robot) ->
 
     robot.respond /PR\sLIST/i, (msg) ->
         github.get "#{url_api_base}/repos/sasarky/ipuhubot/pulls", (pull_requests) ->
+            unless pull_requests.length
+              msg.send 'ない！\n Pull Request がない！'
+              return
             message = 'Pull Request だよ！見てあげてね！\n'
             for pr in pull_requests
                 message = message + "[##{pr.number}][#{pr.title}] #{pr.html_url} by #{pr.user.login}\n"
