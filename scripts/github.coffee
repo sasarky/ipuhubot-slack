@@ -40,3 +40,10 @@ module.exports = (robot) ->
         base_url = "https://octodex.github.com"
         github.get "https://octodexapi.herokuapp.com", (info) ->
             msg.send "#{base_url}#{msg.random(info)['image']}"
+
+    robot.respond /PR\sLIST/i, (msg) ->
+        github.get "#{url_api_base}/repos/sasarky/ipuhubot/pulls", (pull_requests) ->
+            message = 'Pull Request だよ！見てあげてね！\n'
+            for pr in pull_requests
+                message = message + "[##{pr.number}][#{pr.title}] #{pr.html_url} by #{pr.user.login}\n"
+            msg.send message
