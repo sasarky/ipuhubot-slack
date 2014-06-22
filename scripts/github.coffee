@@ -53,6 +53,7 @@ module.exports = (robot) ->
             msg.send message
 
     robot.respond /MERGE\sPR\s(\d*)$/i, (msg) ->
+        # XXX: admin 権限 check をいれる
         async.waterfall([
             (callback) ->
                 pr_number = msg.match[1]
