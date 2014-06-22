@@ -32,8 +32,6 @@ class Logger
 
     # 指定したチャンネルか
     allowed_channels = process.env.HUBOT_LOGGER_ALLOWED_CHANNELS ? 'ipuhubot'
-    for allowed_channel in allowed_channels
-      return true if allowed_channel in room
-    return false
+    return room in allowed_channels.split(',')
 
 module.exports = new Logger
