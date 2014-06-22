@@ -14,7 +14,7 @@ class Logger
 
   log: (message) ->
     # logger が有効な場合だけとる
-    unless this._is_enabled(message.user.room)?
+    unless this._is_enabled(message.user.room)
       return
 
     timestamp = dateformat(new Date(), "HH:MM:ss")
