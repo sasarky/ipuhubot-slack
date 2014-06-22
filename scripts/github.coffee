@@ -6,6 +6,7 @@
 #   hubot add issue <title> <body> - post issue
 #   hubot committer list - show committer list
 
+async = require 'async'
 github = require 'githubot'
 printf = require 'printf'
 
@@ -41,7 +42,7 @@ module.exports = (robot) ->
         github.get "https://octodexapi.herokuapp.com", (info) ->
             msg.send "#{base_url}#{msg.random(info)['image']}"
 
-    robot.respond /PR\sLIST/i, (msg) ->
+    robot.respond /PR\sLIST$/i, (msg) ->
         github.get "#{url_api_base}/repos/sasarky/ipuhubot/pulls", (pull_requests) ->
             unless pull_requests.length
               msg.send 'ない！\n Pull Request がない！'
@@ -50,3 +51,20 @@ module.exports = (robot) ->
             for pr in pull_requests
                 message = message + "[##{pr.number}][#{pr.title}] #{pr.html_url} by #{pr.user.login}\n"
             msg.send message
+
+    robot.respond /MERGE\sPR\s(\d*)$/i, (msg) ->
+        async.waterfall([
+            (callback) ->
+                pr_number = msg.match[1]
+                github.get "#{url_api_base}/repos/sasarky/ipuhubot/pulls/#{pr_number}", (pr) ->
+                    console.log "[##{pr.number}][#{pr.title}] #{pr.html_url} by #{pr.user.login}"
+                setTimeout(() ->
+                  callback(null, pr_number)
+                , 1000)
+            ,
+            (pr_number, callback) ->
+                github.post "#{url_api_base}/repos/sasarky/ipuhubot/pulls/#{pr_number}/merge", (res) ->
+                setTimeout(() ->
+                  msg.send "おめでとう! ##{pr_number} の pull request は merge されたよ！"
+                , 1000)
+        ])
