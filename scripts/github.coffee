@@ -40,3 +40,7 @@ module.exports = (robot) ->
         base_url = "https://octodex.github.com"
         github.get "https://octodexapi.herokuapp.com", (info) ->
             msg.send "#{base_url}#{msg.random(info)['image']}"
+
+    robot.respond /PR\sLIST/i, (msg) ->
+        github.get "#{url_api_base}/repos/sasarky/ipuhubot/pulls", (info) ->
+            console.log(info)
