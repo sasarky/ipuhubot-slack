@@ -6,17 +6,18 @@ request = require 'request'
 
 class WCup
   constructor: () ->
-    @api = 'http://worldcup.sfg.io/matches/today'
+    @api = 'http://worldcup.sfg.io'
 
-  today: (arg, callback) ->
-    request.get(@api, (error, response, body) ->
-      today_matches = JSON.parse(body)
+  getMatchResult: (date, callback) ->
+    url = "#{@api}/matches/#{date}/?by_date=ASC"
+    request.get(url, (error, response, body) ->
+      matches = JSON.parse(body)
 
-      unless today_matches
+      unless matches
         callback('error')
 
-      message = "本日の試合情報です。\n"
-      for match in today_matches
+      message = "#{date} の試合情報です。\n"
+      for match in matches
         if match.status is 'future'
           d = new Date(match.datetime)
           datetime = printf '%02d:%02d', d.getHours(), d.getMinutes()
