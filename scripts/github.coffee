@@ -16,6 +16,9 @@ module.exports = (robot) ->
     robot.respond /ISSUES$/i, (msg) ->
         github.get "#{url_api_base}/repos/sasarky/ipuhubot/issues", (issues) ->
           for issue in issues
+            # pull req はここではみせない
+            if issue.pull_request
+              continue
             msg.send printf "[#%d] %s ( %s ) By %s", issue['number'], issue['title'], issue['html_url'], issue['user']['login']
 
     robot.respond /ADD\sISSUE (.*) (.*)$/i, (msg) ->

@@ -7,18 +7,20 @@
 
 # 開発方法
 ## 新機能追加
-    /script の下に配置すれば勝手に読み込んでくれるっぽい
+/script の下に配置すれば勝手に読み込んでくれるっぽい
 ## ローカルでのテスト方法
+下記コマンドで要 check it out!
     $ bin/hubot
 ## 開発の流れ
 ### feature branch 作成
-    @develop branch の派生で作成してください
-    git checkout -b feature/hogefuga
+@develop branch の派生で作成してください
+git checkout -b feature/hogefuga
 ### develop branch に pull req を送ってレビューしてもらう
-    on the web !!
+on the web !!
 ### そしたらあとは適当に
-    頑張る
+頑張る
+### merge されたら
+ipukun upgrade する
 
 # その他
-    Happy Hacking
-    ごめんなさい
+Happy Hacking
