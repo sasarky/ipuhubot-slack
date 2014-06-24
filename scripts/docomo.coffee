@@ -11,7 +11,7 @@ module.exports = (robot) ->
 
   robot.hear /(.*)/, (msg) ->
     if msg.message.room == 'ipukun_talk'
-      console.log (msg.message.room)
-      request.post(api, body: JSON.stringify({utt: "hello"}), (error, response, body) ->
+      query = msg.match[1]
+      request.post(api, body: JSON.stringify({utt: query}), (error, response, body) ->
         msg.send "@#{msg.message.user.name}: #{JSON.parse(body).utt}"
       )
