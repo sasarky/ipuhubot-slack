@@ -57,3 +57,6 @@ module.exports = (robot) ->
       else
         msg.send 'error'
     )
+
+  robot.respond /AME$/i, (msg) ->
+    msg.send "http://agora.ex.nii.ac.jp/digital-typhoon/radar/graphics/east-i.jpg"
