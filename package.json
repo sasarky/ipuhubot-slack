@@ -21,17 +21,18 @@
     "url": "https://github.com/github/hubot.git"
   },
   "dependencies": {
+    "async": "*",
+    "cron": "*",
+    "dateformat": "*",
+    "githubot": "*",
     "hubot": ">= 2.6.0 < 3.0.0",
     "hubot-scripts": ">= 2.5.0 < 3.0.0",
     "hubot-slack": "^2.1.0",
     "hubot-sushiyuki": "0.0.2",
-    "async": "*",
-    "githubot": "*",
-    "cron": "*",
     "printf": "^0.2.0",
+    "redis": "*",
     "request": "*",
-    "underscore": "^1.6.0",
-    "dateformat": "*"
+    "underscore": "^1.6.0"
   },
   "engines": {
     "node": "0.10.29",
