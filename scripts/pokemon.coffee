@@ -46,6 +46,13 @@ module.exports = (robot) ->
         )
       ,
       (callback) ->
+        pokemon.checkLastAttacker((attacker) ->
+          if msg.message.user.name == attacker
+            msg.send "二回連続攻撃はできないぞ！"
+            return
+          callback(null)
+        )
+      (callback) ->
         pokemon.getPokemonRandom((err, pokemon) ->
           msg.send "#{pokemon.name}！君にきめた！"
           setTimeout(() ->
@@ -66,7 +73,7 @@ HP: #{info.hp}, 攻撃力: #{info.attack}\n
         )
       ,
       (info, callback) ->
-        pokemon.doAttack(info, (err, result) ->
+        pokemon.doAttack(msg.message.user.name, info, (err, result) ->
           if result.hp < 0
             msg.send "やった！でかいぷ君を倒したぞ！"
             pokemon.delDekaIPU()

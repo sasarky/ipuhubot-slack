@@ -24,18 +24,25 @@ class Pokemon
     }
     client.set('hubot:dekaipu:status', JSON.stringify(dekaipu_status))
     client.set('hubot:dekaipu:appeared', 'true')
+    client.set('hubot:dekaipu:last_attacker', 'false')
     callback(dekaipu_status)
+
+  checkLastAttacker: (callback) ->
+    client.get('hubot:dekaipu:last_attacker', (err, val) ->
+      callback(val)
+    )
 
   # でかいぷ消す
   delDekaIPU: (callback) ->
     client.set('hubot:dekaipu:appeared', 'false')
 
-  doAttack: (pokemon, callback) ->
+  doAttack: (user_name, pokemon, callback) ->
     client.get('hubot:dekaipu:status', (err, val) ->
       dekaipu_status = {
         hp: JSON.parse(val).hp - pokemon.attack * 10
       }
       client.set('hubot:dekaipu:status', JSON.stringify(dekaipu_status))
+      client.set('hubot:dekaipu:last_attacker', user_name)
       callback(err, dekaipu_status)
     )
 
