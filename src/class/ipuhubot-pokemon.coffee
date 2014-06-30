@@ -1,6 +1,7 @@
 # Description:
 #   Pokemon
 
+async = require 'async'
 request = require 'request'
 printf = require 'printf'
 _ = require 'underscore'
@@ -39,12 +40,33 @@ class Pokemon
   doAttack: (user_name, pokemon, callback) ->
     client.get('hubot:dekaipu:status', (err, val) ->
       dekaipu_status = {
-        hp: JSON.parse(val).hp - pokemon.attack * 10
+        hp: JSON.parse(val).hp - pokemon.attack
       }
       client.set('hubot:dekaipu:status', JSON.stringify(dekaipu_status))
       client.set('hubot:dekaipu:last_attacker', user_name)
+      client.get("hubot:dekaipu:damage:#{user_name}", (err, val2) ->
+        client.set("hubot:dekaipu:damage:#{user_name}", val2 + pokemon.attack)
+      )
       callback(err, dekaipu_status)
     )
+
+  getDamageRank: (callback0) ->
+    async.waterfall [
+      (callback) ->
+        client.keys("hubot:dekaipu:damage:*", (err, keys) ->
+          damage_list = {}
+          for i in keys
+            client.get(i, (err, damage) ->
+              damage_list[i] = damage
+            )
+          setTimeout(() ->
+            callback(null, damage_list)
+          , 1000)
+        )
+      ,
+      (val, callback) ->
+        callback0(null, val)
+    ]
 
   getPokemonInfo: (uri, callback) ->
     url = "http://pokeapi.co/#{uri}"
