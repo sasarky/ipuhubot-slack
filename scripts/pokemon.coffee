@@ -32,7 +32,7 @@ module.exports = (robot) ->
       (callback) ->
         pokemon.buildDekaIPU((val) ->
           setTimeout(() ->
-            robot.messageRoom("#ipuhubot", "ずずずずずずず\nでかいぷが現れた！！HP: #{val.hp}")
+            robot.messageRoom("#ipuhubot", "ずずずずずずず\nでかいぷが現れた！！HP: #{val.hp}\n http://www.nintendo.co.jp/3ds/balj/img/top/main_kirby.png")
           , 1000)
         )
     ]
