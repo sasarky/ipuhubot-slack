@@ -45,7 +45,7 @@ class Pokemon
       client.set('hubot:dekaipu:status', JSON.stringify(dekaipu_status))
       client.set('hubot:dekaipu:last_attacker', user_name)
       client.get("hubot:dekaipu:damage:#{user_name}", (err, val2) ->
-        client.set("hubot:dekaipu:damage:#{user_name}", val2 + pokemon.attack)
+        client.set("hubot:dekaipu:damage:#{user_name}", Number(val2) + pokemon.attack)
       )
       callback(err, dekaipu_status)
     )
