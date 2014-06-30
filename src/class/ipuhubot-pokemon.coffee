@@ -21,7 +21,7 @@ class Pokemon
   # でかいぷだす
   buildDekaIPU: (callback) ->
     dekaipu_status = {
-      hp: 1000
+      hp: 300
     }
     client.set('hubot:dekaipu:status', JSON.stringify(dekaipu_status))
     client.set('hubot:dekaipu:appeared', 'true')
@@ -51,22 +51,24 @@ class Pokemon
     )
 
   getDamageRank: (callback0) ->
+    damage_list = {}
     async.waterfall [
       (callback) ->
         client.keys("hubot:dekaipu:damage:*", (err, keys) ->
-          damage_list = {}
-          for i in keys
-            client.get(i, (err, damage) ->
-              damage_list[i] = damage
-            )
+          client.mget(keys, (err2, damage) ->
+            i = 0
+            for key in keys
+              damage_list[key] = damage[i++]
+          )
           setTimeout(() ->
             callback(null, damage_list)
           , 1000)
         )
-      ,
-      (val, callback) ->
-        callback0(null, val)
     ]
+    ,
+    (err, damage_list) ->
+      console.log damage_list
+      callback0(null, damage_list)
 
   getPokemonInfo: (uri, callback) ->
     url = "http://pokeapi.co/#{uri}"

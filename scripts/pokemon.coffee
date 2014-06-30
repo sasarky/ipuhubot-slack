@@ -10,7 +10,7 @@ cronJob = require('cron').CronJob
 
 module.exports = (robot) ->
   # ランダムで出現させる
-  new cronJob('0 10,30,50 09-23 * * *', () ->
+  new cronJob('0 0 09-23 * * *', () ->
     async.waterfall [
       # でかいぷいるか取得
       (callback) ->
@@ -40,8 +40,8 @@ module.exports = (robot) ->
 
   robot.respond /pokemon\srank/i, (msg) ->
     pokemon.getDamageRank((err, body) ->
-      for i in body
-        msg.send i
+      for key of body
+        msg.send key.replace(/hubot:dekaipu:damage:/, '') + ": " + body[key]
     )
 
   robot.respond /pokemon\sbattle/i, (msg) ->
