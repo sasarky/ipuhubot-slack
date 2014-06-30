@@ -9,7 +9,8 @@ async = require 'async'
 cronJob = require('cron').CronJob
 
 module.exports = (robot) ->
-  robot.respond /pokemon\sappear/i, (msg) ->
+  # ランダムで出現させる
+  new cronJob('0 10,30,50 09-23 * * *', () ->
     async.waterfall [
       # でかいぷいるか取得
       (callback) ->
@@ -20,19 +21,28 @@ module.exports = (robot) ->
       # 判断
       (val, callback) ->
         if val == 'true'
+          robot.messageRoom("#ipuhubot", "誰か相手してよ。。。")
           return
         else
           setTimeout(() ->
             callback(null)
           , 1000)
       ,
+      # 出す
       (callback) ->
         pokemon.buildDekaIPU((val) ->
           setTimeout(() ->
-            msg.send "ずずずずずずず\nでかいぷが現れた！！HP: #{val.hp}"
+            robot.messageRoom("#ipuhubot", "ずずずずずずず\nでかいぷが現れた！！HP: #{val.hp}")
           , 1000)
         )
     ]
+  ).start()
+
+  robot.respond /pokemon\srank/i, (msg) ->
+    pokemon.getDamageRank((err, body) ->
+      for i in body
+        msg.send i
+    )
 
   robot.respond /pokemon\sbattle/i, (msg) ->
     async.waterfall [
@@ -52,6 +62,7 @@ module.exports = (robot) ->
             return
           callback(null)
         )
+      ,
       (callback) ->
         pokemon.getPokemonRandom((err, pokemon) ->
           msg.send "#{pokemon.name}！君にきめた！"
