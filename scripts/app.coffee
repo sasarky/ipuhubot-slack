@@ -12,6 +12,6 @@ module.exports = (robot) ->
     request.get(url, (err, res, body) ->
       message = ''
       for ent in JSON.parse(xml2json.toJson(body)).feed.entry
-        message = ent.title, ent['im:image'][0]['$t']
+        message = message + ent.title + " " + ent['im:image'][0]['$t'] + "\n"
       msg.send message
     )
