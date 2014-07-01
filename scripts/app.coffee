@@ -8,11 +8,12 @@ printf = require 'printf'
 
 module.exports = (robot) ->
   robot.respond /IOS/i, (msg) ->
-    url = "https://itunes.apple.com/jp/rss/topgrossingapplications/limit=10/xml"
+    url = "https://itunes.apple.com/jp/rss/topfreeapplications/limit=10/json"
     request.get(url, (err, res, body) ->
       message = ''
       i = 1
-      for ent in JSON.parse(xml2json.toJson(body)).feed.entry
-        message = printf '%s[%d] %s\n', message, i++, ent.title
+      for ent in JSON.parse(body).feed.entry
+        console.log ent
+        message = printf '%s[%d] %s ( %s )\n', message, i++, ent.title.label, ent.link.attributes.href
       msg.send message
     )
