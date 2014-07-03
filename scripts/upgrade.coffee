@@ -19,13 +19,16 @@ module.exports = (robot) ->
                 msg.send "進化素材が足りないよ"
             else
                 cnt = 1
-                for commit in info.commits 
+                for commit in info.commits
                     if /^Merge pull request/.exec(commit.commit.message)?
                         continue
                     msg.send "[#{cnt}] #{commit.commit.message} (#{commit.commit.committer.name}): #{commit.html_url}"
                     cnt++
                 msg.send "この進化素材で進化しちゃうよ？ ( https://github.com/sasarky/ipuhubot/compare/master...develop )"
 
+    robot.respond /UPGRADE\sTEST$/i, (msg) ->
+      child_process.exec 'cd ../ipuhubot_test; git pull; mocha -R spec test/test.js', (error, stdout, stderr) ->
+        console.log stdout
 
     robot.respond /UPGRADE\sEXECUTE$/i, (msg) ->
         async.waterfall [

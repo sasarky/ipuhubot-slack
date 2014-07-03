@@ -6,10 +6,10 @@
 meigen = require('../src/class/ipuhubot-meigen')
 
 module.exports = (robot) ->
-    robot.respond /MEIGEN/i, (msg) ->
-        meigen.get('', (body) ->
-            if body == 'error'
-                msg.send "No meigen No Life"
-            else
-                msg.send "#{body.meigen} by #{body.author}\n#{body.image}"
-        )
+  robot.respond /MEIGEN/i, (msg) ->
+    meigen.get('', (body) ->
+      if body == 'error'
+        msg.send "No meigen No Life"
+      else
+        msg.send "#{body.meigen} by #{body.author}\n#{body.image}"
+    )
