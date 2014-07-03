@@ -10,7 +10,7 @@ cronJob = require('cron').CronJob
 
 module.exports = (robot) ->
   # ランダムで出現させる
-  new cronJob('0 0 10 * * *', () ->
+  new cronJob('0 19 23 * * *', () ->
     async.waterfall [
       # でかいぷいるか取得
       (callback) ->
@@ -30,9 +30,9 @@ module.exports = (robot) ->
       ,
       # 出す
       (callback) ->
-        pokemon.buildDekaIPU((val) ->
+        pokemon.buildDekaIPU((hp) ->
           setTimeout(() ->
-            robot.messageRoom("#ipuhubot", "ずずずずずずず\nでかいぷが現れた！！HP: #{val.hp}\n http://www.nintendo.co.jp/3ds/balj/img/top/main_kirby.png")
+            robot.messageRoom("#ipuhubot", "ずずずずずずず\nでかいぷが現れた！！HP: #{hp}\n http://www.nintendo.co.jp/3ds/balj/img/top/main_kirby.png")
           , 1000)
         )
     ]
@@ -60,6 +60,11 @@ module.exports = (robot) ->
           if msg.message.user.name == attacker
             msg.send "二回連続攻撃はできないぞ！"
             return
+          else if attacker == 'false'
+            # 初回 50 point ボーナス
+            bonus = 50
+            msg.send "初回攻撃ボーナス #{bonus} ポイントだ！"
+            pokemon.addBonusPoint(msg.message.user.name, bonus)
           callback(null)
         )
       ,
@@ -87,12 +92,15 @@ HP: #{info.hp}, 攻撃力: #{info.attack}\n
         )
       ,
       (info, callback) ->
-        pokemon.doAttack(msg.message.user.name, info, (err, result) ->
-          if result.hp < 0
-            msg.send "やった！でかいぷ君を倒したぞ！"
+        pokemon.doAttack(msg.message.user.name, info, (err, hp) ->
+          if hp < 0
+            bonus = 100
+            msg.send "やった！でかいぷ君を倒したぞ！ボーナスで #{bonus} ポイントだ！"
             pokemon.delDekaIPU()
+            # 討伐ポイント 100
+            pokemon.addBonusPoint(msg.message.user.name, bonus)
           else
-            msg.send "でかいぷ君にダメージを与えた！残りHPは #{result.hp} だぞ！"
+            msg.send "でかいぷ君にダメージを与えた！残りHPは #{hp} だぞ！"
         )
     ]
 

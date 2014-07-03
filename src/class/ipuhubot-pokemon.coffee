@@ -18,15 +18,19 @@ class Pokemon
       callback(val)
     )
 
+  # ボーナスポイント
+  addBonusPoint: (user_name, point) ->
+    client.get("hubot:dekaipu:damage:#{user_name}", (err, val2) ->
+      client.set("hubot:dekaipu:damage:#{user_name}", Number(val2) + point)
+    )
+
   # でかいぷだす
   buildDekaIPU: (callback) ->
-    dekaipu_status = {
-      hp: 500
-    }
-    client.set('hubot:dekaipu:status', JSON.stringify(dekaipu_status))
+    dekaipu_hp = 500
+    client.set('hubot:dekaipu:hp', dekaipu_hp)
     client.set('hubot:dekaipu:appeared', 'true')
     client.set('hubot:dekaipu:last_attacker', 'false')
-    callback(dekaipu_status)
+    callback(dekaipu_hp)
 
   checkLastAttacker: (callback) ->
     client.get('hubot:dekaipu:last_attacker', (err, val) ->
@@ -38,16 +42,14 @@ class Pokemon
     client.set('hubot:dekaipu:appeared', 'false')
 
   doAttack: (user_name, pokemon, callback) ->
-    client.get('hubot:dekaipu:status', (err, val) ->
-      dekaipu_status = {
-        hp: JSON.parse(val).hp - pokemon.attack
-      }
-      client.set('hubot:dekaipu:status', JSON.stringify(dekaipu_status))
+    client.get('hubot:dekaipu:hp', (err, hp) ->
+      dekaipu_hp = Number(hp) - pokemon.attack
+      client.set('hubot:dekaipu:hp', dekaipu_hp)
       client.set('hubot:dekaipu:last_attacker', user_name)
       client.get("hubot:dekaipu:damage:#{user_name}", (err, val2) ->
         client.set("hubot:dekaipu:damage:#{user_name}", Number(val2) + pokemon.attack)
       )
-      callback(err, dekaipu_status)
+      callback(err, dekaipu_hp)
     )
 
   getDamageRank: (callback0) ->
