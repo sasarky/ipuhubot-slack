@@ -21,7 +21,7 @@ class Pokemon
   # でかいぷだす
   buildDekaIPU: (callback) ->
     dekaipu_status = {
-      hp: 300
+      hp: 500
     }
     client.set('hubot:dekaipu:status', JSON.stringify(dekaipu_status))
     client.set('hubot:dekaipu:appeared', 'true')
