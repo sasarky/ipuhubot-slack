@@ -83,4 +83,11 @@ class Pokemon
       callback(err, pokemon)
     )
 
+  getPokemonImg: (name, callback) ->
+    img_api = "http://ajax.googleapis.com/ajax/services/search/images?q=#{name}&v=1.0"
+    request.get(img_api, (err, res, body) ->
+      callback(err, "#{JSON.parse(body).responseData.results[0].unescapedUrl}#.png")
+    )
+
+
 module.exports = new Pokemon

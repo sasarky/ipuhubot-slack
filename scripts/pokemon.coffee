@@ -64,10 +64,13 @@ module.exports = (robot) ->
         )
       ,
       (callback) ->
-        pokemon.getPokemonRandom((err, pokemon) ->
-          msg.send "#{pokemon.name}！君にきめた！"
+        pokemon.getPokemonRandom((err, pokemon_info) ->
+          msg.send "#{pokemon_info.name}！君にきめた！"
           setTimeout(() ->
-            callback(null, pokemon.resource_uri)
+            pokemon.getPokemonImg(pokemon_info.name, (err, img) ->
+              msg.send img
+            )
+            callback(null, pokemon_info.resource_uri)
           , 1000)
         )
       ,
