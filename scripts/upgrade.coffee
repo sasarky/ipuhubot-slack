@@ -28,7 +28,7 @@ module.exports = (robot) ->
 
     robot.respond /UPGRADE\sTEST$/i, (msg) ->
       child_process.exec 'cd ../ipuhubot_test; git pull; mocha -R spec test/test.js', (error, stdout, stderr) ->
-        console.log stdout
+        msg.send stdout
 
     robot.respond /UPGRADE\sEXECUTE$/i, (msg) ->
         async.waterfall [
