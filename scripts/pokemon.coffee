@@ -10,7 +10,7 @@ cronJob = require('cron').CronJob
 
 module.exports = (robot) ->
   # ランダムで出現させる
-  new cronJob('0 49 12,18,22 * * *', () ->
+  new cronJob('0 0 10 * * *', () ->
     async.waterfall [
       # でかいぷいるか取得
       (callback) ->
