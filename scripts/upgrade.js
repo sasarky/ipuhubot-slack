@@ -19,13 +19,11 @@ module.exports = function(robot) {
       if (info.commits.length == 0) {
         msg.send("進化素材が足りないよ");
       } else {
-        cnt = 1;
-        for (commit in info.commits) {
-          if (/^Merge pull request/.exec(commit.commit.message)) {
-            continue;
+        info.commits.forEach(function(commit, num) {
+          if (!/^Merge pull request/.exec(commit.commit.message)) {
+            msg.send(printf("[%s] %s (%s): %s", num+1, commit.commit.message, commit.commit.committer.name, commit.html_url));
           }
-          msg.send(printf("[%s] %s (%s): %s", cnt++, commit.commit.message, commit.commit.committer.name, commit.html_url));
-        }
+        });
         msg.send("この進化素材で進化しちゃうよ？ ( https://github.com/sasarky/ipuhubot/compare/master...develop )");
       }
     });
