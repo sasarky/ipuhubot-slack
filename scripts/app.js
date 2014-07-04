@@ -4,7 +4,6 @@
 //    hubot ios - show appstore ranking
 
 var request = require('request');
-var xml2json = require('xml2json');
 var printf = require('printf');
 
 module.exports = function(robot) {

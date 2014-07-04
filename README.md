@@ -15,6 +15,8 @@
 ### feature branch 作成
 @develop branch の派生で作成してください
 git checkout -b feature/hogefuga
+### ごりごり作る
+\.js でもよくなりました
 ### develop branch に pull req を送ってレビューしてもらう
 on the web !!
 ### そしたらあとは適当に
