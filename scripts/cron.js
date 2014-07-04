@@ -4,6 +4,7 @@
 
 var cronJob = require('cron').CronJob;
 var meigen = require('../src/class/ipuhubot-meigen');
+var printf = require('printf');
 
 module.exports = function(robot) {
   send = function(room, msg) {
@@ -23,7 +24,7 @@ module.exports = function(robot) {
       if (body == 'error') {
         send("#general", "No meigen No Life");
       } else {
-        send("#general", "#{body.meigen} by #{body.author}\n#{body.image}");
+        send("#general", printf('%s by %s\n%s', body.meigen, body.author, body.image));
       }
     })
   }).start();
