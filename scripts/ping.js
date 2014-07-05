@@ -12,7 +12,12 @@ var request = require('request');
 
 module.exports = function(robot) {
   robot.hear(/YO!$/i, function(msg) {
-    msg.reply("YO!");
+    users = robot.brain.data.users;
+    delete users[1];
+    key = msg.random(Object.keys(users));
+    user = users[key].name;
+    console.log(user);
+    msg.send(user + ": YO!");
   });
 
   robot.respond(/TIME$/i, function(msg) {
