@@ -11,6 +11,10 @@ var printf = require('printf');
 var request = require('request');
 
 module.exports = function(robot) {
+  robot.hear(/YO$/i, function(msg) {
+    msg.reply("YO!");
+  });
+
   robot.respond(/TIME$/i, function(msg) {
     // XXX:moment hogehoge を使いたい
     d = new Date;
