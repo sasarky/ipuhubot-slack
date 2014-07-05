@@ -3,15 +3,15 @@
 //
 
 var mecab = require('mecab-async');
+var printf = require('printf');
 
 module.exports = function(robot) {
   robot.hear(/(.*)/i, function(msg) {
-    if (msg.envelope.room == 'ipukun_school') {
+    if (msg.envelope.room == 'Shell') {
       mecab.parse(msg.message.text, function(err, result) {
-        if (err) {
-          throw err;
-        }
-        msg.send(result);
+        result.forEach(function(row) {
+          msg.reply(printf("%s (%s)", row[0], row[1]));
+        });
       });
     }
   });
