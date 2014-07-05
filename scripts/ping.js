@@ -11,7 +11,7 @@ var printf = require('printf');
 var request = require('request');
 
 module.exports = function(robot) {
-  robot.hear(/YO$/i, function(msg) {
+  robot.hear(/YO!$/i, function(msg) {
     msg.reply("YO!");
   });
 
