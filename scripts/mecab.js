@@ -11,7 +11,7 @@ module.exports = function(robot) {
     if (msg.envelope.room == 'ipukun_school') {
       console.log(msg.match[0]);
       request.get('http://sasarky.net:8888/talk/' + msg.match[0], function(err, res, body) {
-        console.log(body);
+        msg.reply(body);
       });
     }
   });
