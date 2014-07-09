@@ -35,8 +35,7 @@
     "redis": "*",
     "request": "*",
     "underscore": "^1.6.0",
-    "xml2js": "*",
-    "cheerio-httpcli": "*"
+    "xml2js": "*"
   },
   "engines": {
     "node": "0.10.29",
