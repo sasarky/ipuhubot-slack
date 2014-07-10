@@ -1,8 +1,8 @@
 // Description:
-//   dj
+//   ipukun reccomends popular spot at random from CheekiTrip
 //
 // Commands:
-//   hubot dj
+//   hubot trip
 github = require('githubot');
 
 module.exports = function(robot) {
