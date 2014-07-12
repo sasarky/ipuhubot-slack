@@ -9,6 +9,7 @@
 
 var printf = require('printf');
 var request = require('request');
+var client = require('redis').createClient()
 
 module.exports = function(robot) {
   robot.hear(/YO!$/i, function(msg) {
@@ -66,5 +67,13 @@ module.exports = function(robot) {
 
   robot.respond(/AME$/i, function(msg) {
     msg.send("http://agora.ex.nii.ac.jp/digital-typhoon/radar/graphics/east-i.jpg");
+  });
+
+  robot.hear(/ISHIKI\+\+$/i, function(msg) {
+    client.get('hubot:ishiki', function(err, val) {
+      ishiki = Number(val) + 1;
+      msg.send("意識Lv : " + ishiki);
+      client.set('hubot:ishiki', ishiki);
+    });
   });
 }
