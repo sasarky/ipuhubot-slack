@@ -10,6 +10,7 @@
 var printf = require('printf');
 var request = require('request');
 var client = require('redis').createClient()
+var _ = require('underscore');
 
 module.exports = function(robot) {
   robot.hear(/YO!$/i, function(msg) {
@@ -71,11 +72,22 @@ module.exports = function(robot) {
 
   robot.hear(/^ISHIKI\+\+$/i, function(msg) {
     user = msg.message.user.name;
-    key = "hubot:" + user + ":ishiki";
+    key = "hubot:ishiki:" + user;
     client.get(key, function(err, val) {
       ishiki = Number(val) + 1;
       msg.send(user + " の意識Lv : " + ishiki);
       client.set(key, ishiki);
     });
   });
+
+  robot.respond(/ISHIKI$/i, function(msg) {
+    client.keys("hubot:ishiki:*", function(err, keys) {
+      _.each(keys, function(key) {
+        client.get(key, function(err2, ishiki) {
+          msg.send(key.replace(/hubot:ishiki:/, '') + " : " + ishiki);
+        });
+      });
+    });
+  });
+
 }
