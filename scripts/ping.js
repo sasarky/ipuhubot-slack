@@ -69,11 +69,13 @@ module.exports = function(robot) {
     msg.send("http://agora.ex.nii.ac.jp/digital-typhoon/radar/graphics/east-i.jpg");
   });
 
-  robot.hear(/ISHIKI\+\+$/i, function(msg) {
-    client.get('hubot:ishiki', function(err, val) {
+  robot.hear(/^ISHIKI\+\+$/i, function(msg) {
+    user = msg.message.user.name;
+    key = "hubot:" + user + ":ishiki";
+    client.get(key, function(err, val) {
       ishiki = Number(val) + 1;
-      msg.send("意識Lv : " + ishiki);
-      client.set('hubot:ishiki', ishiki);
+      msg.send(user + " の意識Lv : " + ishiki);
+      client.set(key, ishiki);
     });
   });
 }
