@@ -14,7 +14,7 @@ module.exports = function(robot) {
   url_api_base = "https://api.github.com";
 
   robot.respond(/UPGRADE\sPREPARE$/i, function(msg) {
-    url = printf("%s/repos/sasarky/ipuhubot/compare/master...develop", url_api_base);
+    url = printf("%s/repos/sasarky/ipuhubot-slack/compare/master...develop", url_api_base);
     github.get(url, function(info) {
       if (info.commits.length == 0) {
         msg.send("進化素材が足りないよ");
@@ -24,7 +24,7 @@ module.exports = function(robot) {
             msg.send(printf("[%s] %s (%s): %s", num+1, commit.commit.message, commit.commit.committer.name, commit.html_url));
           }
         });
-        msg.send("この進化素材で進化しちゃうよ？ ( https://github.com/sasarky/ipuhubot/compare/master...develop )");
+        msg.send("この進化素材で進化しちゃうよ？ ( https://github.com/sasarky/ipuhubot-slack/compare/master...develop )");
       }
     });
   });
@@ -40,7 +40,7 @@ module.exports = function(robot) {
       function(callback) {
         msg.send("ごごごごごごご");
         setTimeout(function() {
-          github.branches("sasarky/ipuhubot").merge("develop", function(branches) {
+          github.branches("sasarky/ipuhubot-slack").merge("develop", function(branches) {
             msg.send("進化の準備が整いました");
             setTimeout(function() {
               callback(null);
