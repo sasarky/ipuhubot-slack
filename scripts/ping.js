@@ -70,6 +70,26 @@ module.exports = function(robot) {
     msg.send("http://agora.ex.nii.ac.jp/digital-typhoon/radar/graphics/east-i.jpg");
   });
 
+  robot.hear(/^CONTEXT\+\+$/i, function(msg) {
+    user = msg.message.user.name;
+    key = "hubot:context:" + user;
+    client.get(key, function(err, val) {
+      context = Number(val) + 1;
+      msg.send(user + " のコンテキストLv : " + context);
+      client.set(key, context);
+    });
+  });
+
+  robot.hear(/^CONTEXT\-\-$/i, function(msg) {
+    user = msg.message.user.name;
+    key = "hubot:context:" + user;
+    client.get(key, function(err, val) {
+      context = Number(val) - 1;
+      msg.send(user + " の意識Lv : " + context);
+      client.set(key, context);
+    });
+  });
+
   robot.hear(/^ISHIKI\+\+$/i, function(msg) {
     user = msg.message.user.name;
     key = "hubot:ishiki:" + user;
