@@ -70,51 +70,26 @@ module.exports = function(robot) {
     msg.send("http://agora.ex.nii.ac.jp/digital-typhoon/radar/graphics/east-i.jpg");
   });
 
-  robot.hear(/^CONTEXT\+\+$/i, function(msg) {
+  robot.hear(/^(\w*)([\+|\-]{2})$/i, function(msg) {
     user = msg.message.user.name;
-    key = "hubot:context:" + user;
+    word = msg.match[1];
+    op = msg.match[2][0]
+    key = printf("hubot:%s:%s", word, user);
     client.get(key, function(err, val) {
-      context = Number(val) + 1;
-      msg.send(user + " のコンテキストLv : " + context);
-      client.set(key, context);
+      expression = printf("lv = %d %s %d", Number(val), op, 1);
+      eval(expression);
+      msg.send(printf("%s の %s LV : %d", user, word, lv));
+      client.set(key, lv);
     });
   });
 
-  robot.hear(/^CONTEXT\-\-$/i, function(msg) {
-    user = msg.message.user.name;
-    key = "hubot:context:" + user;
-    client.get(key, function(err, val) {
-      context = Number(val) - 1;
-      msg.send(user + " の意識Lv : " + context);
-      client.set(key, context);
-    });
-  });
-
-  robot.hear(/^ISHIKI\+\+$/i, function(msg) {
-    user = msg.message.user.name;
-    key = "hubot:ishiki:" + user;
-    client.get(key, function(err, val) {
-      ishiki = Number(val) + 1;
-      msg.send(user + " の意識Lv : " + ishiki);
-      client.set(key, ishiki);
-    });
-  });
-
-  robot.hear(/^ISHIKI\-\-$/i, function(msg) {
-    user = msg.message.user.name;
-    key = "hubot:ishiki:" + user;
-    client.get(key, function(err, val) {
-      ishiki = Number(val) - 1;
-      msg.send(user + " の意識Lv : " + ishiki);
-      client.set(key, ishiki);
-    });
-  });
-
-  robot.respond(/ISHIKI$/i, function(msg) {
-    client.keys("hubot:ishiki:*", function(err, keys) {
+  robot.respond(/(\w+)\sRANK$/i, function(msg) {
+    word = msg.match[1];
+    redis_key = printf("hubot:%s:*", msg.match[1]);
+    client.keys(redis_key, function(err, keys) {
       _.each(keys, function(key) {
-        client.get(key, function(err2, ishiki) {
-          msg.send(key.replace(/hubot:ishiki:/, '') + " : " + ishiki);
+        client.get(key, function(err2, val) {
+          msg.send(key.replace(printf("hubot:%s:", word), '') + " : " + val);
         });
       });
     });
