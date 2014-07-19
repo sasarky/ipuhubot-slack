@@ -70,10 +70,14 @@ module.exports = function(robot) {
     msg.send("http://agora.ex.nii.ac.jp/digital-typhoon/radar/graphics/east-i.jpg");
   });
 
-  robot.hear(/^(\w*)([\+|\-]{2})$/i, function(msg) {
-    user = msg.message.user.name;
-    word = msg.match[1];
-    op = msg.match[2][0]
+  robot.hear(/^(.*\s)?(\w*)([\+|\-]{2})$/i, function(msg) {
+    if (msg.match[1]) {
+      user = msg.match[1];
+    } else {
+      user = msg.message.user.name;
+    }
+    word = msg.match[2];
+    op = msg.match[3][0]
     key = printf("hubot:%s:%s", word, user);
     client.get(key, function(err, val) {
       expression = printf("lv = %d %s %d", Number(val), op, 1);
