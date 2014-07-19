@@ -72,7 +72,7 @@ module.exports = function(robot) {
 
   robot.hear(/^(.*\s)?(\w*)([\+|\-]{2})$/i, function(msg) {
     if (msg.match[1]) {
-      user = msg.match[1];
+      user = msg.match[1].replace(':', '');
     } else {
       user = msg.message.user.name;
     }
