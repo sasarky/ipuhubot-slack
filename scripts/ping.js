@@ -99,4 +99,12 @@ module.exports = function(robot) {
     });
   });
 
+  robot.hear(/^(.*)([\+]{2})$/i, function(msg) {
+    user = msg.match[1].replace(':', '');
+    url = printf("https://shinobi-stg.herokuapp.com/api/status/%s/increment", user);
+    request.post(url, function(error, response, body) {
+      b = JSON.parse(body);
+      msg.send(printf("%s の評判: %d", b.nickname, b.status));
+    });
+  });
 }
