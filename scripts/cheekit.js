@@ -5,7 +5,7 @@
 //   hubot cheekit
 
 module.exports = function(robot) {
-  robot.hear(/cheekit$/i, function(msg) {
-    msg.send("make local hapiness!");
+  robot.hear(/^cheekit$/, function(msg) {
+    msg.send("make local happiness!");
   });
 };
