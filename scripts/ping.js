@@ -99,4 +99,14 @@ module.exports = function(robot) {
     });
   });
 
+  robot.respond(/EVENT\s(.*)$/i, function(msg) {
+    console.log('hage');
+    key = printf('http://connpass.com/api/v1/event/?keyword=%s', msg.match[1]);
+    console.log(key);
+    request.get(key, function(error, response, body) {
+      event = msg.random(JSON.parse(body).events);
+      msg.send(printf("%s (%s)", event.title, event.event_url));
+    });
+  });
+
 }
