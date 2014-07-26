@@ -35,7 +35,7 @@ module.exports = (robot) ->
             msg.send "おめでとう！issue #{issue.number} 「#{issue.title}」 を完了したよ！ #{issue.html_url}"
 
     robot.respond /CONTRIBUTORS$/i, (msg) ->
-        github.get "#{url_api_base}/repos/sasarky/ipuhubot/contributors", (info) ->
+        github.get "#{url_api_base}/repos/sasarky/ipuhubot-slack/contributors", (info) ->
           for i in info
             msg.send printf "%s: %d", i.login, i.contributions
 
