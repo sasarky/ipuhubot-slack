@@ -10,6 +10,7 @@
 var printf = require('printf');
 var request = require('request');
 var client = require('redis').createClient()
+var cheerio = require('cheerio-httpcli');
 var _ = require('underscore');
 
 module.exports = function(robot) {
@@ -106,6 +107,17 @@ module.exports = function(robot) {
     request.get(key, function(error, response, body) {
       event = msg.random(JSON.parse(body).events);
       msg.send(printf("%s ( %s )", event.title, event.event_url));
+    });
+  });
+
+  robot.respond(/QIITA\sRANK$/i, function(msg) {
+    users = ['sasarkyz', '7kaji', 'otukutun', 'isseium'];
+    users.forEach(function(user) {
+      url = "http://qiita.com/" + user;
+      cheerio.fetch(url, {}, function (err, $, res){
+        count = $('.second-line')[0].children[1].children[0].data;
+        msg.send(user + ": " + count);
+      });
     });
   });
 
