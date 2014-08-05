@@ -111,7 +111,7 @@ module.exports = function(robot) {
   });
 
   robot.respond(/QIITA\sRANK$/i, function(msg) {
-    users = ['sasarkyz', '7kaji', 'otukutun', 'isseium'];
+    users = ['sasarkyz', '7kaji', 'otukutun', 'isseium', 'n0bisuke', 'kazuhikoyamashita'];
     users.forEach(function(user) {
       url = "http://qiita.com/" + user;
       cheerio.fetch(url, {}, function (err, $, res){
