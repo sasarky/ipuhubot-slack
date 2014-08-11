@@ -5,6 +5,8 @@
 var cronJob = require('cron').CronJob;
 var meigen = require('../src/class/ipuhubot-meigen');
 var printf = require('printf');
+var github = require('githubot');
+var _ = require('underscore');
 
 module.exports = function(robot) {
   send = function(room, msg) {
@@ -35,6 +37,14 @@ module.exports = function(robot) {
 
   new cronJob('0 0 18 * * 1,2,3,4,5', function() {
     send("#general", "今日も一日お疲れ様！");
+  }).start();
+
+  new cronJob('0 0 8 * * 1,2,3,4,5', function() {
+    github.get("https://api.github.com/gists/2e2c97ed80e994c9286a", function (info) {
+      problem = _.sample(info.files)
+      url = printf("http://projecteuler.net/problem=%d", problem.filename);
+      send("#general", problem.content + "\n\n" + url);
+    });
   }).start();
   // }}}
 }
