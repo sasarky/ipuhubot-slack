@@ -50,14 +50,21 @@ Pokemon.prototype.delDekaIPU = function(callback) {
 // 攻撃する
 Pokemon.prototype.doAttack = function(user_name, pokemon, callback) {
   client.get('hubot:dekaipu:hp', function(err, hp) {
-    dekaipu_hp = Number(hp) - pokemon.attack;
+    seed = Math.random();
+    damage = Math.floor(0.8 * pokemon.attack + seed * 0.4 * pokemon.attack);
+    crit = false;
+    if (Math.random() > 0.9) {
+      crit = true;
+      damage = damage * 2;
+    }
+    dekaipu_hp = Number(hp) - damage;
     client.set('hubot:dekaipu:hp', dekaipu_hp);
     client.set('hubot:dekaipu:last_attacker', user_name);
     damage_key = printf("hubot:dekaipu:damage:%s", user_name);
     client.get(damage_key, function(err, val2) {
-      client.set(damage_key, Number(val2) + pokemon.attack);
+      client.set(damage_key, Number(val2) + damage);
     });
-    callback(err, dekaipu_hp);
+    callback(err, damage, crit, dekaipu_hp);
   });
 }
 
