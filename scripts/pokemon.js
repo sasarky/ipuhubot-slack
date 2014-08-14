@@ -97,7 +97,11 @@ module.exports = function(robot) {
         });
       },
       function (info, callback) {
-        pokemon.doAttack(msg.message.user.name, info, function(err, hp) {
+        pokemon.doAttack(msg.message.user.name, info, function(err, damage, crit, hp) {
+          if (crit) {
+            msg.send("おっと！急所にあたった！");
+          }
+          msg.send(printf("%d のダメージ！", damage));
           if (hp < 0) {
             bonus = 100;
             msg.send(printf("やった！でかいぷ君を倒したぞ！ボーナスで %d ポイントだ！", bonus));
