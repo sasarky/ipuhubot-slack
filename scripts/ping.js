@@ -121,4 +121,15 @@ module.exports = function(robot) {
     });
   });
 
+  robot.hear(/zekkei$/i, function(msg) {
+    request.get("http://zekkei-switch.herokuapp.com/locations/fetch_location.json", function(error, response, body) {
+      if (response.statusCode == 200) {
+        data = JSON.parse(body);
+        console.log(printf("%s\n%s\n%s", data.name, data.description, data.photo));
+      } else {
+        msg.send('error');
+      }
+    });
+  });
+
 }
