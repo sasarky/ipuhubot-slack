@@ -106,4 +106,21 @@ Pokemon.prototype.getPokemonImg = function(name, callback) {
   });
 }
 
+// message lock
+Pokemon.prototype.checkLock = function(callback) {
+  client.get('hubot:pokemon:lock', function(err, lock) {
+    callback(null, lock);
+  });
+}
+
+Pokemon.prototype.lock = function(user_name, callback) {
+  client.set('hubot:pokemon:lock', user_name);
+  callback(null, "true");
+}
+
+Pokemon.prototype.unlock = function(user_name, callback) {
+  client.set('hubot:pokemon:lock', "false");
+  callback(null, "true");
+}
+
 module.exports = new Pokemon
