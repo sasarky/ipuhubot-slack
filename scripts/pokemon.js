@@ -137,6 +137,19 @@ module.exports = function(robot) {
     user_name = msg.message.user.name;
 
     async.waterfall([
+      // チュートリアルチェック
+      function(callback) {
+        pokemon.getUserInfo(user_name, function(err, info) {
+          if (info == null) {
+            callback(null);
+          } else if (info.tutorial == true) {
+            msg.send("お前さんはすでにポケモンを手に入れているようじゃ");
+            return;
+          } else {
+            callback(null);
+          }
+        });
+      },
       // 操作チェック
       function(callback) {
         pokemon.checkLock(key, function(err, lock) {
@@ -151,19 +164,6 @@ module.exports = function(robot) {
             });
           }
         })
-      },
-      // チュートリアルチェック
-      function(callback) {
-        pokemon.getUserInfo(user_name, function(err, info) {
-          if (info == null) {
-            callback(null);
-          } else if (info.tutorial == true) {
-            msg.send("お前さんはすでにポケモンを手に入れているようじゃ");
-            return;
-          } else {
-            callback(null);
-          }
-        });
       },
       // 選択中
       function(callback) {
@@ -191,18 +191,33 @@ module.exports = function(robot) {
       // 操作チェック
       function(callback) {
         pokemon.checkLock(key, function(err, lock) {
-          if (lock == null) {
-            msg.send(printf("オーキドのことば......\n%s よ！ こういうものには つかいどきが あるのじゃ！", user_name));
+          console.log(user_name + ":" + lock);
+          if (lock == null || lock == false || lock == "false") {
+            msg.send(printf("%s よ！ こういうものには つかいどきが あるのじゃ！", user_name));
             return;
-          }
-          lock_user_name = lock.replace(/hubot:pokemon:lock:okido/, '');
-          if (lock_user_name != user_name) {
+          } else if (lock == user_name) {
+            callback(null);
+          } else {
             msg.send("おっと誰かが操作中のようじゃ");
             return;
+          }
+        });
+      },
+      // 一応チュートリアルチェック (こないはずだけど)
+      function(callback) {
+        pokemon.getUserInfo(user_name, function(err, info) {
+          if (info == null) {
+            callback(null);
+          } else if (info.tutorial == true) {
+            msg.send("お前さんはすでにポケモンを手に入れているようじゃ");
+            // デッドロックしないようにするために unlock する
+            pokemon.unlock(key, function(err, result) {
+              return;
+            });
           } else {
             callback(null);
           }
-        })
+        });
       },
       // 番号チェック
       function(callback) {
