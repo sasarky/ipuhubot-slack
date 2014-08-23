@@ -118,24 +118,50 @@ module.exports = function(robot) {
   });
 
   // New Pokemon
-  // 最初のポケモンを手に入れられるやつ
-  robot.respond(/pokemon\sokido/i, function(msg) {
+  robot.respond(/pokemon\sparty$/i, function(msg) {
     user_name = msg.message.user.name;
+    msg.send(user_name + " のパーティ");
+
+    pokemon.getParty(user_name, function(err, party) {
+      JSON.parse(party).forEach(function(mon) {
+        pokemon.getPokemonImg(mon.name, function(err, img) {
+          msg.send(printf("%s [LV: %s]\n", mon.name, mon.lv, img));
+        });
+      });
+    });
+  });
+
+  // 最初のポケモンを手に入れられるやつ
+  robot.respond(/pokemon\sokido$/i, function(msg) {
+    key = 'okido';
+    user_name = msg.message.user.name;
+
     async.waterfall([
       // 操作チェック
       function(callback) {
-        pokemon.checkLock(function(err, lock) {
-          if (lock != "false") {
+        pokemon.checkLock(key, function(err, lock) {
+          if (lock != "false" && lock != null) {
             msg.send("おっと誰かが操作中のようじゃ");
             return;
           } else {
-            pokemon.lock(user_name, function(err, result) {
+            pokemon.lock(key, user_name, function(err, result) {
               setTimeout(function() {
                 callback(null);
               }, 1000);
             });
           }
         })
+      },
+      // チュートリアルチェック
+      function(callback) {
+        pokemon.getUserInfo(user_name, function(err, info) {
+          if (info.tutorial == true) {
+            msg.send("お前さんはすでにポケモンを手に入れているようじゃ");
+            return;
+          } else {
+            callback(null);
+          }
+        });
       },
       // 選択中
       function(callback) {
@@ -152,9 +178,50 @@ module.exports = function(robot) {
         });
         callback(null);
       },
+    ])
+  });
+
+  robot.respond(/pokemon\sokido\sselect\s(.*)$/i, function(msg) {
+    key = 'okido';
+    user_name = msg.message.user.name;
+
+    async.waterfall([
+      // 操作チェック
+      function(callback) {
+        pokemon.checkLock(key, function(err, lock) {
+          if (lock == null) {
+            msg.send(printf("オーキドのことば......\n%s よ！ こういうものには つかいどきが あるのじゃ！", user_name));
+            return;
+          }
+          lock_user_name = lock.replace(/hubot:pokemon:lock:okido/, '');
+          console.log(lock_user_name);
+          if (lock_user_name != user_name) {
+            msg.send("おっと誰かが操作中のようじゃ");
+            return;
+          } else {
+            callback(null);
+          }
+        })
+      },
+      // 番号チェック
+      function(callback) {
+        select_num = Number(msg.match[1]);
+        if ([1, 4, 7].indexOf(select_num) != -1) {
+          pokemon.getPokemon(user_name, select_num, function(err, result) {
+            callback(null);
+          });
+        } else {
+          msg.send("その番号は無効じゃ。。。ゲームオーバーじゃ!!!");
+        }
+      },
+      function(callback) {
+        pokemon.setTutorial(user_name, function(err, result) {
+          callback(null);
+        });
+      },
       // 最後にロックを外す
       function(callback) {
-        pokemon.unlock(user_name, function(err, result) {
+        pokemon.unlock(key, function(err, result) {
           callback(null);
         });
       },

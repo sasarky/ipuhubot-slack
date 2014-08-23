@@ -107,20 +107,80 @@ Pokemon.prototype.getPokemonImg = function(name, callback) {
 }
 
 // message lock
-Pokemon.prototype.checkLock = function(callback) {
-  client.get('hubot:pokemon:lock', function(err, lock) {
+Pokemon.prototype.checkLock = function(key, callback) {
+  client.get(printf('hubot:pokemon:lock:%s', key), function(err, lock) {
     callback(null, lock);
   });
 }
 
-Pokemon.prototype.lock = function(user_name, callback) {
-  client.set('hubot:pokemon:lock', user_name);
+Pokemon.prototype.lock = function(key, user_name, callback) {
+  client.set(printf('hubot:pokemon:lock:%s', key), user_name);
   callback(null, "true");
 }
 
-Pokemon.prototype.unlock = function(user_name, callback) {
-  client.set('hubot:pokemon:lock', "false");
+Pokemon.prototype.unlock = function(key, callback) {
+  client.set(printf('hubot:pokemon:lock:%s', key), "false");
   callback(null, "true");
+}
+
+Pokemon.prototype.getUserInfo = function(user_name, callback) {
+  client.get(printf('hubot:pokemon:user:%s', user_name), function(err, body) {
+    user_info = JSON.parse(body);
+    callback(null, user_info);
+  });
+}
+
+Pokemon.prototype.setTutorial = function(user_name, callback) {
+  user_info = {
+    'tutorial': true
+  };
+  client.set(printf('hubot:pokemon:user:%s', user_name), JSON.stringify(user_info));
+  callback(null, user_info);
+}
+
+Pokemon.prototype.getParty = function(user_name, callback) {
+  client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
+    callback(null, party);
+  });
+}
+
+
+Pokemon.prototype.getPokemon = function(user_name, num, callback) {
+  url = printf("http://pokeapi.co/api/v1/pokemon/%s", num);
+  async.waterfall([
+    function(callback) {
+      request.get(url, function(err, res, mon) {
+        mon_obj = JSON.parse(mon);
+        pokemon = {
+          "name": mon_obj.name,
+          "lv": 1,
+          "status": {
+            "hp": mon_obj.hp,
+            "attack": mon_obj.attack,
+            "defense": mon_obj.defense,
+            "sp_atk": mon_obj.sp_atk,
+            "sp_def": mon_obj.sp_def,
+            "speed": mon_obj.speed,
+          }
+        }
+        callback(null, pokemon);
+      });
+    },
+    function(pokemon, callback) {
+      client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
+        party_obj = JSON.parse(party);
+        var new_party = null;
+        if (party == null) {
+          new_party = new Array(pokemon);
+        } else {
+          new_party = party_obj.concat(pokemon);
+        }
+        client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(new_party));
+      });
+      callback(null, "true");
+    },
+  ]);
+  callback(null, 'success');
 }
 
 module.exports = new Pokemon
