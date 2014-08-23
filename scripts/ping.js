@@ -88,6 +88,7 @@ module.exports = function(robot) {
     });
   });
 
+  /* 一時停止
   robot.respond(/(\w+)\sRANK$/i, function(msg) {
     word = msg.match[1];
     redis_key = printf("hubot:%s:*", msg.match[1]);
@@ -99,6 +100,7 @@ module.exports = function(robot) {
       });
     });
   });
+  */
 
   robot.respond(/EVENT\s(.*)$/i, function(msg) {
     d = new Date;

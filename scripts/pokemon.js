@@ -44,7 +44,7 @@ module.exports = function(robot) {
   }).start();
 
   // NOTE: ここは hogheoge rank と merge させたい
-  robot.respond(/pokemon\srank/i, function(msg) {
+  robot.respond(/pokemon\srank$/i, function(msg) {
     pokemon.getDamageRank(function(err, body) {
       msg.send(body.key.replace(/hubot:dekaipu:damage:/, '') + ": " + body.damage)
     });
