@@ -144,6 +144,12 @@ Pokemon.prototype.getParty = function(user_name, callback) {
   });
 }
 
+Pokemon.prototype.getMyPokemon = function(user_name, callback) {
+  client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
+    callback(null, _.first(JSON.parse(party), 1)[0]);
+  });
+}
+
 
 Pokemon.prototype.getPokemon = function(user_name, num, callback) {
   url = printf("http://pokeapi.co/api/v1/pokemon/%s", num);
@@ -151,6 +157,7 @@ Pokemon.prototype.getPokemon = function(user_name, num, callback) {
     mon_obj = JSON.parse(mon);
     pokemon = {
       "name": mon_obj.name,
+      "resource_uri": mon_obj.resource_uri,
       "lv": 1,
       "status": {
         "hp": mon_obj.hp,
