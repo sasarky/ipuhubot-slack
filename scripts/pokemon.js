@@ -155,7 +155,9 @@ module.exports = function(robot) {
       // チュートリアルチェック
       function(callback) {
         pokemon.getUserInfo(user_name, function(err, info) {
-          if (info.tutorial == true) {
+          if (info == null) {
+            callback(null);
+          } else if (info.tutorial == true) {
             msg.send("お前さんはすでにポケモンを手に入れているようじゃ");
             return;
           } else {
@@ -194,7 +196,6 @@ module.exports = function(robot) {
             return;
           }
           lock_user_name = lock.replace(/hubot:pokemon:lock:okido/, '');
-          console.log(lock_user_name);
           if (lock_user_name != user_name) {
             msg.send("おっと誰かが操作中のようじゃ");
             return;
@@ -207,7 +208,10 @@ module.exports = function(robot) {
       function(callback) {
         select_num = Number(msg.match[1]);
         if ([1, 4, 7].indexOf(select_num) != -1) {
-          pokemon.getPokemon(user_name, select_num, function(err, result) {
+          pokemon.getPokemon(user_name, select_num, function(err, result, mon) {
+            if (result == "success") {
+              msg.send("やった！" + mon.name + " をゲットしたぞ！");
+            }
             callback(null);
           });
         } else {

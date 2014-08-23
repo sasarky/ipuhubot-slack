@@ -147,40 +147,32 @@ Pokemon.prototype.getParty = function(user_name, callback) {
 
 Pokemon.prototype.getPokemon = function(user_name, num, callback) {
   url = printf("http://pokeapi.co/api/v1/pokemon/%s", num);
-  async.waterfall([
-    function(callback) {
-      request.get(url, function(err, res, mon) {
-        mon_obj = JSON.parse(mon);
-        pokemon = {
-          "name": mon_obj.name,
-          "lv": 1,
-          "status": {
-            "hp": mon_obj.hp,
-            "attack": mon_obj.attack,
-            "defense": mon_obj.defense,
-            "sp_atk": mon_obj.sp_atk,
-            "sp_def": mon_obj.sp_def,
-            "speed": mon_obj.speed,
-          }
-        }
-        callback(null, pokemon);
-      });
-    },
-    function(pokemon, callback) {
-      client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
-        party_obj = JSON.parse(party);
-        var new_party = null;
-        if (party == null) {
-          new_party = new Array(pokemon);
-        } else {
-          new_party = party_obj.concat(pokemon);
-        }
-        client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(new_party));
-      });
-      callback(null, "true");
-    },
-  ]);
-  callback(null, 'success');
+  request.get(url, function(err, res, mon) {
+    mon_obj = JSON.parse(mon);
+    pokemon = {
+      "name": mon_obj.name,
+      "lv": 1,
+      "status": {
+        "hp": mon_obj.hp,
+        "attack": mon_obj.attack,
+        "defense": mon_obj.defense,
+        "sp_atk": mon_obj.sp_atk,
+        "sp_def": mon_obj.sp_def,
+        "speed": mon_obj.speed,
+      }
+    }
+    client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
+      party_obj = JSON.parse(party);
+      var new_party = null;
+      if (party == null) {
+        new_party = new Array(pokemon);
+      } else {
+        new_party = party_obj.concat(pokemon);
+      }
+      client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(new_party));
+      callback(null, 'success', pokemon);
+    });
+  });
 }
 
 module.exports = new Pokemon
