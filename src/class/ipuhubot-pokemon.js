@@ -115,12 +115,12 @@ Pokemon.prototype.checkLock = function(key, callback) {
 
 Pokemon.prototype.lock = function(key, user_name, callback) {
   client.set(printf('hubot:pokemon:lock:%s', key), user_name);
-  callback(null, "true");
+  callback(null, true);
 }
 
 Pokemon.prototype.unlock = function(key, callback) {
-  client.set(printf('hubot:pokemon:lock:%s', key), "false");
-  callback(null, "true");
+  client.set(printf('hubot:pokemon:lock:%s', key), false);
+  callback(null, true);
 }
 
 Pokemon.prototype.getUserInfo = function(user_name, callback) {
