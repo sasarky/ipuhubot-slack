@@ -5,6 +5,7 @@
 //   hubot battle - do battle
 
 var pokemon = require('../src/class/ipuhubot-pokemon')
+var _ = require('underscore');
 var async = require('async')
 var cronJob = require('cron').CronJob
 var printf = require('printf')
@@ -115,4 +116,49 @@ module.exports = function(robot) {
       }
     ]);
   });
+
+  // New Pokemon
+  // 最初のポケモンを手に入れられるやつ
+  robot.respond(/pokemon\sokido/i, function(msg) {
+    user_name = msg.message.user.name;
+    async.waterfall([
+      // 操作チェック
+      function(callback) {
+        pokemon.checkLock(function(err, lock) {
+          if (lock != "false") {
+            msg.send("おっと誰かが操作中のようじゃ");
+            return;
+          } else {
+            pokemon.lock(user_name, function(err, result) {
+              setTimeout(function() {
+                callback(null);
+              }, 1000);
+            });
+          }
+        })
+      },
+      // 選択中
+      function(callback) {
+        // ふしぎだね、ぜにがめ、ひとかげ
+        firstPokemons = [1, 4, 7];
+        msg.send(printf("%s 君よ、最初のポケモンはこいつらじゃ\n好きなポケモンの番号を選ぶのじゃ", user_name));
+        firstPokemons.forEach(function(i) {
+          url = printf("api/v1/pokemon/%s", i);
+          pokemon.getPokemonInfo(url, function(err, mon) {
+            pokemon.getPokemonImg(mon.name, function(err, img) {
+              msg.send(printf("%s: %s\n%s", i, mon.name, img));
+            });
+          });
+        });
+        callback(null);
+      },
+      // 最後にロックを外す
+      function(callback) {
+        pokemon.unlock(user_name, function(err, result) {
+          callback(null);
+        });
+      },
+    ])
+  });
+
 }
