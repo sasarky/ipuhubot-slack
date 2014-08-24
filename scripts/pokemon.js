@@ -51,13 +51,30 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\scenter$/i, function(msg) {
+    key = 'center';
     user_name = msg.message.user.name;
     async.waterfall([
+      function(callback) {
+        pokemon.checkLock(key, function(err, lock) {
+          if (lock != "false" && lock != null) {
+            msg.send("だれかが回復中ですわ。明後日きやがれ");
+            return;
+          } else {
+            pokemon.lock(key, user_name, function(err, result) {
+              setTimeout(function() {
+                callback(null);
+              }, 1000);
+            });
+          }
+        })
+      },
       function(callback) {
         pokemon.getUserInfo(user_name, function(err, info) {
           if (info.money < 100) {
             msg.send(printf("金もってねえやつはくんな！"));
-            return;
+            pokemon.unlock(key, function(err, result) {
+              return;
+            });
           } else {
             msg.send(printf("いらっしゃいませ。一回100円です"));
             info.money = Number(info.money) - 100;
@@ -84,12 +101,15 @@ module.exports = function(robot) {
       function(info, callback) {
         msg.send("回復しました");
         pokemon.setUserInfo(user_name, info, function(err, result) {
+          pokemon.unlock(key, function(err, result) {
+            return;
+          });
         });
       },
     ]);
   });
 
-  robot.respond(/pokemon\sbattle/i, function(msg) {
+  robot.respond(/pokemon\sbattle$/i, function(msg) {
     async.waterfall([
       // ランダムで手持ちのポケモン選ぶ
       function(callback) {
