@@ -51,7 +51,42 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\scenter$/i, function(msg) {
-    msg.send("[張り紙] ポケモンセンターはロケット団のもの！");
+    user_name = msg.message.user.name;
+    async.waterfall([
+      function(callback) {
+        pokemon.getUserInfo(user_name, function(err, info) {
+          if (info.money < 100) {
+            msg.send(printf("金もってねえやつはくんな！"));
+            return;
+          } else {
+            msg.send(printf("いらっしゃいませ。一回100円です"));
+            info.money = Number(info.money) - 100;
+            setTimeout(function() {
+              callback(null, info);
+            }, 1000);
+          }
+        });
+      },
+      function(info, callback) {
+        pokemon.getParty(user_name, function(err, party) {
+          party = JSON.parse(party);
+          Object.keys(party).forEach(function(key) {
+            mon = party[key];
+            mon.status.hp = mon.status.max_hp;
+            pokemon.setPokemonInfo(user_name, mon, function(err, result) {
+            });
+          });
+          setTimeout(function() {
+            callback(null, info);
+          }, 1000);
+        });
+      },
+      function(info, callback) {
+        msg.send("回復しました");
+        pokemon.setUserInfo(user_name, info, function(err, result) {
+        });
+      },
+    ]);
   });
 
   robot.respond(/pokemon\sbattle/i, function(msg) {
@@ -125,7 +160,7 @@ module.exports = function(robot) {
     user_name = msg.message.user.name;
     msg.send(user_name + " の情報");
     pokemon.getUserInfo(user_name, function(err, info) {
-      msg.send(printf("所持金: %s\nバッジ数: %s", info.money, 0));
+      msg.send(printf("所持金: %s円\nバッジ数: %s", info.money, 0));
     });
   });
 
