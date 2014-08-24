@@ -146,11 +146,22 @@ Pokemon.prototype.getParty = function(user_name, callback) {
 
 Pokemon.prototype.getMyPokemon = function(user_name, callback) {
   client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
-    callback(null, _.first(JSON.parse(party), 1)[0]);
+    party = JSON.parse(party);
+    first_mon = _.first(Object.keys(party), 1);
+    callback(null, party[first_mon]);
   });
 }
 
+Pokemon.prototype.setPokemonInfo = function(user_name, pokemon, callback) {
+  client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
+    party_obj = JSON.parse(party);
+    party_obj[pokemon.name] = pokemon;
+    client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(party_obj));
+    callback(null, 'result');
+  });
+}
 
+// get っていうのはポケモンゲットだぜ！の get です
 Pokemon.prototype.getPokemon = function(user_name, num, callback) {
   url = printf("http://pokeapi.co/api/v1/pokemon/%s", num);
   request.get(url, function(err, res, mon) {
@@ -159,8 +170,10 @@ Pokemon.prototype.getPokemon = function(user_name, num, callback) {
       "name": mon_obj.name,
       "resource_uri": mon_obj.resource_uri,
       "lv": 1,
+      "exp": 0,
       "status": {
         "hp": mon_obj.hp,
+        "max_hp": mon_obj.hp,
         "attack": mon_obj.attack,
         "defense": mon_obj.defense,
         "sp_atk": mon_obj.sp_atk,
@@ -170,13 +183,12 @@ Pokemon.prototype.getPokemon = function(user_name, num, callback) {
     }
     client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
       party_obj = JSON.parse(party);
-      var new_party = null;
-      if (party == null) {
-        new_party = new Array(pokemon);
-      } else {
-        new_party = party_obj.concat(pokemon);
+      if (party_obj == null) {
+        party_obj = {};
       }
-      client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(new_party));
+      party_obj[pokemon.name] = pokemon;
+      console.log(party_obj);
+      client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(party_obj));
       callback(null, 'success', pokemon);
     });
   });
