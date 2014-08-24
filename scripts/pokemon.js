@@ -248,16 +248,30 @@ module.exports = function(robot) {
 
   robot.respond(/pokemon\sbouken$/i, function(msg) {
     user_name = msg.message.user.name;
-    msg.send("さあ今日は冒険にでよう!");
 
     async.waterfall([
+      function(callback) {
+        pokemon.getUserInfo(user_name, function(err, info) {
+          if (info == null || !info.tutorial) {
+            msg.send("おーい！草むらに入っちゃいかーん！\nわしの研究所にくるのじゃ！");
+            return;
+          } else {
+            msg.send("さあ今日は冒険にでかけよう!");
+            setTimeout(function() {
+              callback(null);
+            }, 1000);
+          }
+        });
+      },
       function(callback) {
         // とりあえず今はランダムで
         pokemon.getPokemonRandom(function(err, enemy) {
           pokemon.getPokemonInfo(enemy.resource_uri, function(err, enemy_info) {
             pokemon.getPokemonImg(enemy.name, function(err, img) {
               msg.send(printf("%s が現れた！\nHP:%s, ATK:%s, DEF:%s\n%s", enemy_info.name, enemy_info.hp, enemy_info.attack + enemy_info.sp_atk, enemy_info.defense + enemy_info.sp_def, img));
-              callback(null, enemy_info);
+              setTimeout(function() {
+                callback(null, enemy);
+              }, 1000);
             });
           });
         });
@@ -267,7 +281,9 @@ module.exports = function(robot) {
         pokemon.getMyPokemon(user_name, function(err, my_poke) {
           pokemon.getPokemonImg(my_poke.name, function(err, img) {
             msg.send(printf("いけ! %s\nHP:%s, ATK:%s, DEF:%s\n%s", my_poke.name, my_poke.status.hp, my_poke.status.attack + my_poke.status.sp_atk, my_poke.status.defense + my_poke.status.sp_def, img));
-            callback(null, my_poke, enemy);
+            setTimeout(function() {
+              callback(null, my_poke, enemy);
+            }, 2000);
           });
         });
       },
