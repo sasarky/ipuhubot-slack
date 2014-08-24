@@ -51,16 +51,15 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\scenter$/i, function(msg) {
-    key = 'center';
     user_name = msg.message.user.name;
     async.waterfall([
       function(callback) {
-        pokemon.checkLock(key, function(err, lock) {
+        pokemon.checkLock(function(err, lock) {
           if (lock != "false" && lock != null) {
-            msg.send("だれかが回復中ですわ。明後日きやがれ");
+            msg.send("だれかが操作中ですわ。明後日きやがれ");
             return;
           } else {
-            pokemon.lock(key, user_name, function(err, result) {
+            pokemon.lock(user_name, function(err, result) {
               setTimeout(function() {
                 callback(null);
               }, 1000);
@@ -72,7 +71,7 @@ module.exports = function(robot) {
         pokemon.getUserInfo(user_name, function(err, info) {
           if (info.money < 100) {
             msg.send(printf("金もってねえやつはくんな！"));
-            pokemon.unlock(key, function(err, result) {
+            pokemon.unlock(function(err, result) {
               return;
             });
           } else {
@@ -101,7 +100,7 @@ module.exports = function(robot) {
       function(info, callback) {
         msg.send("回復しました");
         pokemon.setUserInfo(user_name, info, function(err, result) {
-          pokemon.unlock(key, function(err, result) {
+          pokemon.unlock(function(err, result) {
             return;
           });
         });
@@ -219,12 +218,12 @@ module.exports = function(robot) {
       },
       // 操作チェック
       function(callback) {
-        pokemon.checkLock(key, function(err, lock) {
+        pokemon.checkLock(function(err, lock) {
           if (lock != "false" && lock != null) {
             msg.send("おっと誰かが操作中のようじゃ");
             return;
           } else {
-            pokemon.lock(key, user_name, function(err, result) {
+            pokemon.lock(user_name, function(err, result) {
               setTimeout(function() {
                 callback(null);
               }, 1000);
@@ -251,13 +250,12 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\sokido\sselect\s(.*)$/i, function(msg) {
-    key = 'okido';
     user_name = msg.message.user.name;
 
     async.waterfall([
       // 操作チェック
       function(callback) {
-        pokemon.checkLock(key, function(err, lock) {
+        pokemon.checkLock(function(err, lock) {
           if (lock == null || lock == false || lock == "false") {
             msg.send(printf("%s よ！ こういうものには つかいどきが あるのじゃ！", user_name));
             return;
@@ -277,7 +275,7 @@ module.exports = function(robot) {
           } else if (info.tutorial == true) {
             msg.send("お前さんはすでにポケモンを手に入れているようじゃ");
             // デッドロックしないようにするために unlock する
-            pokemon.unlock(key, function(err, result) {
+            pokemon.unlock(function(err, result) {
               return;
             });
           } else {
@@ -306,7 +304,7 @@ module.exports = function(robot) {
       },
       // 最後にロックを外す
       function(callback) {
-        pokemon.unlock(key, function(err, result) {
+        pokemon.unlock(function(err, result) {
           callback(null);
         });
       },
@@ -315,17 +313,16 @@ module.exports = function(robot) {
 
   robot.respond(/pokemon\sbouken$/i, function(msg) {
     user_name = msg.message.user.name;
-    key = 'bouken';
 
     async.waterfall([
       // 操作チェック
       function(callback) {
-        pokemon.checkLock(key, function(err, lock) {
+        pokemon.checkLock(function(err, lock) {
           if (lock != "false" && lock != null) {
-            msg.send("おっと誰かが冒険中のようじゃ");
+            msg.send("おっと誰かが操作中じゃ");
             return;
           } else {
-            pokemon.lock(key, user_name, function(err, result) {
+            pokemon.lock(user_name, function(err, result) {
               setTimeout(function() {
                 callback(null);
               }, 1000);
@@ -337,7 +334,7 @@ module.exports = function(robot) {
         pokemon.getUserInfo(user_name, function(err, info) {
           if (info == null || !info.tutorial) {
             msg.send("おーい！草むらに入っちゃいかーん！\nわしの研究所にくるのじゃ！");
-            pokemon.unlock(key, function(err, result) {
+            pokemon.unlock(function(err, result) {
               return;
             });
           } else {
@@ -352,7 +349,7 @@ module.exports = function(robot) {
         pokemon.getMyPokemon(user_name, function(err, my_poke) {
           if (my_poke.hp <= 0 ) {
             msg.send("手持ちのポケモンが瀕死だ！ポケモンセンターにいって回復しよう");
-            pokemon.unlock(key, function(err, result) {
+            pokemon.unlock(function(err, result) {
               return;
             });
           } else {
@@ -432,7 +429,7 @@ module.exports = function(robot) {
       },
       function(my_poke, callback) {
         pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
-          pokemon.unlock(key, function(err, result) {
+          pokemon.unlock(function(err, result) {
             return;
           });
         });
