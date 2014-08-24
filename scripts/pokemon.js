@@ -253,13 +253,31 @@ module.exports = function(robot) {
 
   robot.respond(/pokemon\sbouken$/i, function(msg) {
     user_name = msg.message.user.name;
+    key = 'bouken';
 
     async.waterfall([
+      // 操作チェック
+      function(callback) {
+        pokemon.checkLock(key, function(err, lock) {
+          if (lock != "false" && lock != null) {
+            msg.send("おっと誰かが冒険中のようじゃ");
+            return;
+          } else {
+            pokemon.lock(key, user_name, function(err, result) {
+              setTimeout(function() {
+                callback(null);
+              }, 1000);
+            });
+          }
+        });
+      },
       function(callback) {
         pokemon.getUserInfo(user_name, function(err, info) {
           if (info == null || !info.tutorial) {
             msg.send("おーい！草むらに入っちゃいかーん！\nわしの研究所にくるのじゃ！");
-            return;
+            pokemon.unlock(key, function(err, result) {
+              return;
+            });
           } else {
             msg.send("さあ今日は冒険にでかけよう!");
             setTimeout(function() {
@@ -272,7 +290,9 @@ module.exports = function(robot) {
         pokemon.getMyPokemon(user_name, function(err, my_poke) {
           if (my_poke.status.hp <= 0 ) {
             msg.send("手持ちのポケモンが瀕死だ！ポケモンセンターにいって回復しよう");
-            return;
+            pokemon.unlock(key, function(err, result) {
+              return;
+            });
           } else {
             setTimeout(function() {
               callback(null, my_poke);
@@ -320,6 +340,9 @@ module.exports = function(robot) {
       },
       function(my_poke, callback) {
         pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
+          pokemon.unlock(key, function(err, result) {
+            return;
+          });
         });
       },
     ]);
