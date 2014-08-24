@@ -121,6 +121,14 @@ module.exports = function(robot) {
     ]);
   });
 
+  robot.respond(/pokemon\sstatus$/i, function(msg) {
+    user_name = msg.message.user.name;
+    msg.send(user_name + " の情報");
+    pokemon.getUserInfo(user_name, function(err, info) {
+      msg.send(printf("所持金: %s\nバッジ数: %s", info.money, 0));
+    });
+  });
+
   // New Pokemon
   robot.respond(/pokemon\sparty$/i, function(msg) {
     user_name = msg.message.user.name;
