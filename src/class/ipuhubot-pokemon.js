@@ -233,6 +233,21 @@ Pokemon.prototype.getUserInfo = function(user_name, callback) {
   });
 }
 
+Pokemon.prototype.calculateStatus = function(pokemon, level, callback) {
+  url = printf("http://pokeapi.co/%s", pokemon.resource_uri);
+  request.get(url, function(err, res, body) {
+    body = JSON.parse(body);
+    calculated_info = {};
+    calculated_info.hp = Math.floor(body.hp * 2 * level / 100 + level + 10);
+    calculated_info.attack = Math.floor((body.attack * 2) * level / 100 + 5);
+    calculated_info.defense = Math.floor((body.defense * 2) * level / 100 + 5);
+    calculated_info.sp_atk = Math.floor((body.sp_atk * 2) * level / 100 + 5);
+    calculated_info.sp_def = Math.floor((body.sp_def * 2) * level / 100 + 5);
+    calculated_info.speed = Math.floor((body.speed * 2) * level / 100 + 5);
+    callback(err, calculated_info);
+  });
+}
+
 Pokemon.prototype.setUserInfo = function(user_name, info, callback) {
   client.set(printf('hubot:pokemon:user:%s', user_name), JSON.stringify(info));
   callback(null, "success");
@@ -278,31 +293,32 @@ Pokemon.prototype.getExpTable = function(callback) {
 Pokemon.prototype.getPokemon = function(user_name, num, callback) {
   url = printf("http://pokeapi.co/api/v1/pokemon/%s", num);
   request.get(url, function(err, res, mon) {
-    mon_obj = JSON.parse(mon);
-    pokemon = {
-      "name": mon_obj.name,
-      "resource_uri": mon_obj.resource_uri,
-      "lv": 1,
-      "exp": 0,
-      "status": {
-        "hp": mon_obj.hp,
-        "max_hp": mon_obj.hp,
-        "attack": mon_obj.attack,
-        "defense": mon_obj.defense,
-        "sp_atk": mon_obj.sp_atk,
-        "sp_def": mon_obj.sp_def,
-        "speed": mon_obj.speed,
+    mon = JSON.parse(mon);
+    Pokemon.prototype.calculateStatus(mon, 1, function(err, calculated_info) {
+      console.log(calculated_info);
+      pokemon = {
+        "name": mon.name,
+        "resource_uri": mon.resource_uri,
+        "lv": 1,
+        "exp": 0,
+        "hp": calculated_info.hp,
+        "max_hp": calculated_info.hp,
+        "attack": calculated_info.attack,
+        "defense": calculated_info.defense,
+        "sp_atk": calculated_info.sp_atk,
+        "sp_def": calculated_info.sp_def,
+        "speed": calculated_info.speed,
       }
-    }
-    client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
-      party_obj = JSON.parse(party);
-      if (party_obj == null) {
-        party_obj = {};
-      }
-      party_obj[pokemon.name] = pokemon;
-      console.log(party_obj);
-      client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(party_obj));
-      callback(null, 'success', pokemon);
+      client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
+        party_obj = JSON.parse(party);
+        if (party_obj == null) {
+          party_obj = {};
+        }
+        party_obj[pokemon.name] = pokemon;
+        console.log(party_obj);
+        client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(party_obj));
+        callback(null, 'success', pokemon);
+      });
     });
   });
 }

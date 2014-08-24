@@ -89,7 +89,7 @@ module.exports = function(robot) {
           party = JSON.parse(party);
           Object.keys(party).forEach(function(key) {
             mon = party[key];
-            mon.status.hp = mon.status.max_hp;
+            mon.hp = mon.max_hp;
             pokemon.setPokemonInfo(user_name, mon, function(err, result) {
             });
           });
@@ -192,7 +192,7 @@ module.exports = function(robot) {
       Object.keys(party).forEach(function (key) {
         mon = party[key];
         pokemon.getPokemonImg(mon.name, function(err, img) {
-          msg.send(printf("%s [LV: %s][HP: %s/%s]\n%s", mon.name, mon.lv, mon.status.hp, mon.status.max_hp, img));
+          msg.send(printf("%s [LV: %s][HP: %s/%s][ATK: %s, DEF: %s, SP_ATK: %s, SP_DEF: %s, SPD: %s]\n%s", mon.name, mon.lv, mon.hp, mon.max_hp, mon.attack, mon.defense, mon.sp_atk, mon.sp_def, mon.speed, img));
         });
       });
     });
@@ -350,7 +350,7 @@ module.exports = function(robot) {
       },
       function(callback) {
         pokemon.getMyPokemon(user_name, function(err, my_poke) {
-          if (my_poke.status.hp <= 0 ) {
+          if (my_poke.hp <= 0 ) {
             msg.send("手持ちのポケモンが瀕死だ！ポケモンセンターにいって回復しよう");
             pokemon.unlock(key, function(err, result) {
               return;
@@ -367,10 +367,19 @@ module.exports = function(robot) {
         pokemon.getPokemonRandom(function(err, enemy) {
           pokemon.getPokemonInfo(enemy.resource_uri, function(err, enemy_info) {
             pokemon.getPokemonImg(enemy.name, function(err, img) {
-              msg.send(printf("%s が現れた！\nHP:%s, ATK:%s, DEF:%s\n%s", enemy_info.name, enemy_info.hp, enemy_info.attack + enemy_info.sp_atk, enemy_info.defense + enemy_info.sp_def, img));
-              setTimeout(function() {
-                callback(null, my_poke, enemy_info);
-              }, 1000);
+              pokemon.calculateStatus(enemy_info, 1, function(err, enemy_cal) {
+                // 上書きしちゃう
+                enemy_info.hp = enemy_cal.hp;
+                enemy_info.attack = enemy_cal.attack;
+                enemy_info.defense = enemy_cal.defense;
+                enemy_info.sp_atk = enemy_cal.sp_atk;
+                enemy_info.sp_def = enemy_cal.sp_def;
+                enemy_info.speed = enemy_cal.speed;
+                msg.send(printf("%s が現れた！\nHP:%s, ATK:%s, DEF:%s\n%s", enemy_info.name, enemy_info.hp, enemy_info.attack + enemy_info.sp_atk, enemy_info.defense + enemy_info.sp_def, img));
+                setTimeout(function() {
+                  callback(null, my_poke, enemy_info);
+                }, 1000);
+              });
             });
           });
         });
@@ -378,7 +387,7 @@ module.exports = function(robot) {
       // 手持ちのポケモンを出す
       function(my_poke, enemy, callback) {
         pokemon.getPokemonImg(my_poke.name, function(err, img) {
-          msg.send(printf("いけ! %s\nHP:%s, ATK:%s, DEF:%s\n%s", my_poke.name, my_poke.status.hp, my_poke.status.attack + my_poke.status.sp_atk, my_poke.status.defense + my_poke.status.sp_def, img));
+          msg.send(printf("いけ! %s\nHP:%s, ATK:%s, DEF:%s\n%s", my_poke.name, my_poke.hp, my_poke.attack + my_poke.sp_atk, my_poke.defense + my_poke.sp_def, img));
           setTimeout(function() {
             callback(null, my_poke, enemy);
           }, 2000);
@@ -386,12 +395,12 @@ module.exports = function(robot) {
       },
       function(my_poke, enemy, callback) {
         // とりあえず今は面倒なので足し算で済ませる
-        my_poke_power = my_poke.status.attack + my_poke.status.defense + my_poke.status.sp_atk + my_poke.status.sp_def + my_poke.status.speed;
+        my_poke_power = my_poke.attack + my_poke.defense + my_poke.sp_atk + my_poke.sp_def + my_poke.speed;
         enemy_power = enemy.attack + enemy.defense + enemy.sp_atk + enemy.sp_def + enemy.speed;
         if (my_poke_power > enemy_power) {
-          my_poke.status.hp = Math.floor(my_poke.status.hp - (enemy_power / 10));
-          if (my_poke.status.hp < 0) {
-            my_poke.status.hp = 0;
+          my_poke.hp = Math.floor(my_poke.hp - (enemy_power / 10));
+          if (my_poke.hp < 0) {
+            my_poke.hp = 0;
           }
           msg.send(printf("やったぞ！バトルに勝利し%sの経験値をゲットした!", enemy.exp));
           pokemon.getExpTable(function(err, exp_table) {
@@ -399,13 +408,26 @@ module.exports = function(robot) {
             if (my_poke.exp >= exp_table[my_poke.lv + 1]) {
               my_poke.lv = my_poke.lv + 1;
               msg.send(printf("%s は LV %s にあがった", my_poke.name, my_poke.lv));
+              pokemon.calculateStatus(my_poke, my_poke.lv, function(err, cal_status) {
+                my_poke.max_hp = cal_status.hp;
+                my_poke.hp = cal_status.hp;
+                my_poke.attack = cal_status.attack;
+                my_poke.defense = cal_status.defense;
+                my_poke.sp_atk = cal_status.sp_atk;
+                my_poke.sp_def = cal_status.sp_def;
+                my_poke.speed = cal_status.speed;
+              });
             }
-            callback(null, my_poke, enemy, true);
+            setTimeout(function() {
+              callback(null, my_poke, enemy, true);
+            }, 2000);
           });
         } else {
-          my_poke.status.hp = 0;
+          my_poke.hp = 0;
           msg.send("バトルに負けた。目の前が真っ暗になった");
-          callback(null, my_poke, enemy, false);
+          setTimeout(function() {
+            callback(null, my_poke, enemy, false);
+          }, 2000);
         }
       },
       function(my_poke, callback) {
