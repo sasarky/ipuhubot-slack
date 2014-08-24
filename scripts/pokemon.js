@@ -158,9 +158,8 @@ module.exports = function(robot) {
 
   robot.respond(/pokemon\sstatus$/i, function(msg) {
     user_name = msg.message.user.name;
-    msg.send(user_name + " の情報");
     pokemon.getUserInfo(user_name, function(err, info) {
-      msg.send(printf("所持金: %s円\nバッジ数: %s", info.money, 0));
+      msg.send(printf("%s の情報\n所持金: %s円\nバッジ数: %s", user_name, info.money, 0));
     });
   });
 
@@ -374,12 +373,20 @@ module.exports = function(robot) {
           if (my_poke.status.hp < 0) {
             my_poke.status.hp = 0;
           }
-          msg.send("やったぞ！バトルに勝利した!");
+          msg.send(printf("やったぞ！バトルに勝利し%sの経験値をゲットした!", enemy.exp));
+          pokemon.getExpTable(function(err, exp_table) {
+            my_poke.exp = my_poke.exp + enemy.exp;
+            if (my_poke.exp >= exp_table[my_poke.lv + 1]) {
+              my_poke.lv = my_poke.lv + 1;
+              msg.send(printf("%s は LV %s にあがった", my_poke.name, my_poke.lv));
+            }
+            callback(null, my_poke, enemy, true);
+          });
         } else {
           my_poke.status.hp = 0;
           msg.send("バトルに負けた。目の前が真っ暗になった");
+          callback(null, my_poke, enemy, false);
         }
-        callback(null, my_poke);
       },
       function(my_poke, callback) {
         pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
