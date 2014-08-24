@@ -270,7 +270,7 @@ module.exports = function(robot) {
             pokemon.getPokemonImg(enemy.name, function(err, img) {
               msg.send(printf("%s が現れた！\nHP:%s, ATK:%s, DEF:%s\n%s", enemy_info.name, enemy_info.hp, enemy_info.attack + enemy_info.sp_atk, enemy_info.defense + enemy_info.sp_def, img));
               setTimeout(function() {
-                callback(null, enemy);
+                callback(null, enemy_info);
               }, 1000);
             });
           });
@@ -293,6 +293,7 @@ module.exports = function(robot) {
         if (my_poke_power > enemy_power) {
           msg.send("やったぞ！バトルに勝利した!");
         } else {
+          my_poke.status.hp = 0;
           msg.send("バトルに負けた。目の前が真っ暗になった");
         }
       },
