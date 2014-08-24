@@ -210,19 +210,19 @@ Pokemon.prototype.getPokemonImg = function(name, callback) {
 }
 
 // message lock
-Pokemon.prototype.checkLock = function(key, callback) {
-  client.get(printf('hubot:pokemon:lock:%s', key), function(err, lock) {
+Pokemon.prototype.checkLock = function(callback) {
+  client.get('hubot:pokemon:lock', function(err, lock) {
     callback(null, lock);
   });
 }
 
-Pokemon.prototype.lock = function(key, user_name, callback) {
-  client.set(printf('hubot:pokemon:lock:%s', key), user_name);
+Pokemon.prototype.lock = function(user_name, callback) {
+  client.set('hubot:pokemon:lock', user_name);
   callback(null, true);
 }
 
-Pokemon.prototype.unlock = function(key, callback) {
-  client.set(printf('hubot:pokemon:lock:%s', key), false);
+Pokemon.prototype.unlock = function(callback) {
+  client.set('hubot:pokemon:lock', false);
   callback(null, true);
 }
 
