@@ -50,6 +50,10 @@ module.exports = function(robot) {
     });
   });
 
+  robot.respond(/pokemon\scenter$/i, function(msg) {
+    msg.send("[張り紙] ポケモンセンターはロケット団のもの！");
+  });
+
   robot.respond(/pokemon\sbattle/i, function(msg) {
     async.waterfall([
       // ランダムで手持ちのポケモン選ぶ
