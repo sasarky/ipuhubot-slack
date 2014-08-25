@@ -387,7 +387,7 @@ module.exports = function(robot) {
           msg.send(printf("いけ! %s\nHP:%s, ATK:%s, DEF:%s\n%s", my_poke.name, my_poke.hp, my_poke.attack + my_poke.sp_atk, my_poke.defense + my_poke.sp_def, img));
           setTimeout(function() {
             callback(null, my_poke, enemy);
-          }, 2000);
+          }, 1000);
         });
       },
       function(my_poke, enemy, callback) {
@@ -405,34 +405,55 @@ module.exports = function(robot) {
             if (my_poke.exp >= exp_table[my_poke.lv + 1]) {
               my_poke.lv = my_poke.lv + 1;
               msg.send(printf("%s は LV %s にあがった", my_poke.name, my_poke.lv));
-              pokemon.calculateStatus(my_poke, my_poke.lv, function(err, cal_status) {
-                my_poke.max_hp = cal_status.hp;
-                my_poke.hp = cal_status.hp;
-                my_poke.attack = cal_status.attack;
-                my_poke.defense = cal_status.defense;
-                my_poke.sp_atk = cal_status.sp_atk;
-                my_poke.sp_def = cal_status.sp_def;
-                my_poke.speed = cal_status.speed;
+              pokemon.checkEvolution(my_poke, function(err, result, info) {
+                if (my_poke.lv >= result) {
+                  msg.send(printf("おや %s の様子が。。。\nやったぞ！ %s は %s に進化した！！！", my_poke.name, my_poke.name, info.name));
+                  pokemon.delPokemonInfo(user_name, my_poke.name, function(err, hoge) {
+                    my_poke.name = info.name;
+                    my_poke.resource_uri = info.resource_uri;
+                    pokemon.calculateStatus(my_poke, my_poke.lv, function(err, cal_status) {
+                      my_poke.name = info.name;
+                      my_poke.max_hp = cal_status.hp;
+                      my_poke.hp = cal_status.hp;
+                      my_poke.attack = cal_status.attack;
+                      my_poke.defense = cal_status.defense;
+                      my_poke.sp_atk = cal_status.sp_atk;
+                      my_poke.sp_def = cal_status.sp_def;
+                      my_poke.speed = cal_status.speed;
+                    });
+                  });
+                } else {
+                  pokemon.calculateStatus(my_poke, my_poke.lv, function(err, cal_status) {
+                    my_poke.max_hp = cal_status.hp;
+                    my_poke.hp = cal_status.hp;
+                    my_poke.attack = cal_status.attack;
+                    my_poke.defense = cal_status.defense;
+                    my_poke.sp_atk = cal_status.sp_atk;
+                    my_poke.sp_def = cal_status.sp_def;
+                    my_poke.speed = cal_status.speed;
+                  });
+                }
               });
             }
             setTimeout(function() {
-              callback(null, my_poke, enemy, true);
+              pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
+                pokemon.unlock(function(err, result) {
+                  return;
+                });
+              });
             }, 2000);
           });
         } else {
           my_poke.hp = 0;
           msg.send("バトルに負けた。目の前が真っ暗になった");
           setTimeout(function() {
-            callback(null, my_poke, enemy, false);
+            pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
+              pokemon.unlock(function(err, result) {
+                return;
+              });
+            });
           }, 2000);
         }
-      },
-      function(my_poke, callback) {
-        pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
-          pokemon.unlock(function(err, result) {
-            return;
-          });
-        });
       },
     ]);
   });
