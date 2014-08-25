@@ -204,9 +204,10 @@ Pokemon.prototype.getPokemonRandom = function(callback) {
 Pokemon.prototype.getPokemonImg = function(name, callback) {
   img_api = printf("http://ajax.googleapis.com/ajax/services/search/images?q=%s&v=1.0", name);
   request.get(img_api, function(err, res, body) {
+    body = JSON.parse(body);
     img_url = null;
-    if (err == null) {
-      img_url = JSON.parse(body).responseData.results[0].unescapedUrl;
+    if (body.responseStatus == 200) {
+      img_url = body.responseData.results[0].unescapedUrl;
     }
     callback(err, img_url);
   });
