@@ -335,9 +335,7 @@ module.exports = function(robot) {
             return;
           } else {
             pokemon.lock(user_name, function(err, result) {
-              setTimeout(function() {
-                callback(null);
-              }, 1000);
+              callback(null);
             });
           }
         });
@@ -351,9 +349,7 @@ module.exports = function(robot) {
             });
           } else {
             msg.send("さあ今日は冒険にでかけよう!");
-            setTimeout(function() {
-              callback(null);
-            }, 1000);
+            callback(null);
           }
         });
       },
@@ -365,9 +361,7 @@ module.exports = function(robot) {
               return;
             });
           } else {
-            setTimeout(function() {
-              callback(null, my_poke);
-            }, 1000);
+            callback(null, my_poke);
           }
         });
       },
@@ -447,13 +441,11 @@ module.exports = function(robot) {
                 }
               });
             }
-            setTimeout(function() {
-              pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
-                pokemon.unlock(function(err, result) {
-                  return;
-                });
+            pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
+              pokemon.unlock(function(err, result) {
+                return;
               });
-            }, 2000);
+            });
           });
         } else {
           my_poke.hp = 0;
