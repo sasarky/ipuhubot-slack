@@ -176,6 +176,10 @@ module.exports = function(robot) {
     ]);
   });
 
+  robot.respond(/pokemon\sdendo$/i, function(msg) {
+    msg.send(printf("初代ポケモンチャンピオン: %s\n%s\n%s", "@otukutun", "数多のポケモントレーナーの中から毎朝、出勤前にコツコツと偽IPU君を倒し続けた。終盤の駆け引きでは彼の右に出るものはいない", "https://pbs.twimg.com/profile_images/3205530758/09e19e7c9299888f8de60030ff36b37e.png"));
+  });
+
   robot.respond(/pokemon\sadmin\sunlock$/i, function(msg) {
     user_name = msg.message.user.name;
     if (user_name == 'sasarky') {
