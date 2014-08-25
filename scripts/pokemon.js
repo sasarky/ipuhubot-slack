@@ -426,6 +426,9 @@ module.exports = function(robot) {
                       my_poke.sp_atk = cal_status.sp_atk;
                       my_poke.sp_def = cal_status.sp_def;
                       my_poke.speed = cal_status.speed;
+                      setTimeout(function() {
+                        callback(null, my_poke);
+                      }, 1000);
                     });
                   });
                 } else {
@@ -437,27 +440,29 @@ module.exports = function(robot) {
                     my_poke.sp_atk = cal_status.sp_atk;
                     my_poke.sp_def = cal_status.sp_def;
                     my_poke.speed = cal_status.speed;
+                    setTimeout(function() {
+                      callback(null, my_poke);
+                    }, 1000);
                   });
                 }
               });
+            } else {
+              setTimeout(function() {
+                callback(null, my_poke);
+              }, 1000);
             }
-            pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
-              pokemon.unlock(function(err, result) {
-                return;
-              });
-            });
           });
         } else {
           my_poke.hp = 0;
           msg.send("バトルに負けた。目の前が真っ暗になった");
-          setTimeout(function() {
-            pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
-              pokemon.unlock(function(err, result) {
-                return;
-              });
-            });
-          }, 2000);
         }
+      },
+      function(my_poke, callback) {
+        pokemon.setPokemonInfo(user_name, my_poke, function(err, result) {
+          pokemon.unlock(function(err, result) {
+            return;
+          });
+        });
       },
     ]);
   });

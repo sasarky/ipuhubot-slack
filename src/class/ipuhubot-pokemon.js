@@ -289,6 +289,7 @@ Pokemon.prototype.getMyPokemon = function(user_name, callback) {
 }
 
 Pokemon.prototype.setPokemonInfo = function(user_name, pokemon, callback) {
+  console.log(pokemon);
   client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
     party_obj = JSON.parse(party);
     party_obj[pokemon.name] = pokemon;
