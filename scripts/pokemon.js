@@ -9,6 +9,7 @@ var _ = require('underscore');
 var async = require('async')
 var cronJob = require('cron').CronJob
 var printf = require('printf')
+var client = require('redis').createClient()
 
 module.exports = function(robot) {
   // ランダムで出現させる
@@ -173,6 +174,17 @@ module.exports = function(robot) {
         });
       }
     ]);
+  });
+
+  robot.respond(/pokemon\sadmin\sunlock$/i, function(msg) {
+    user_name = msg.message.user.name;
+    if (user_name == 'sasarky') {
+      pokemon.unlock(function(err, result) {
+        msg.send("unlock しました");
+      });
+    } else {
+      msg.send("お前にはむりだ");
+    }
   });
 
   robot.respond(/pokemon\sstatus$/i, function(msg) {
