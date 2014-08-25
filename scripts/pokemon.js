@@ -368,8 +368,8 @@ module.exports = function(robot) {
       function(my_poke, callback) {
         // とりあえず今はランダムで
         pokemon.getPokemonRandom(function(err, enemy) {
-          pokemon.getPokemonInfo(enemy.resource_uri, function(err, enemy_info) {
-            pokemon.getPokemonImg(enemy.name, function(err, img) {
+          pokemon.getPokemonInfo(enemy.resource_uri, function(err2, enemy_info) {
+            pokemon.getPokemonImg(enemy.name, function(err3, img) {
               pokemon.calculateStatus(enemy_info, 1, function(err, enemy_cal) {
                 // 上書きしちゃう
                 enemy_info.hp = enemy_cal.hp;
