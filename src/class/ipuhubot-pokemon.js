@@ -248,6 +248,14 @@ Pokemon.prototype.calculateStatus = function(pokemon, level, callback) {
   });
 }
 
+Pokemon.prototype.checkEvolution = function(pokemon, callback) {
+  Pokemon.prototype.getPokemonInfo(pokemon.resource_uri, function(err, info) {
+    Pokemon.prototype.getPokemonInfo(info.evolutions[0].resource_uri, function(err2, info2) {
+      callback(null, info.evolutions[0].level, info2);
+    });
+  });
+}
+
 Pokemon.prototype.setUserInfo = function(user_name, info, callback) {
   client.set(printf('hubot:pokemon:user:%s', user_name), JSON.stringify(info));
   callback(null, "success");
@@ -285,6 +293,15 @@ Pokemon.prototype.setPokemonInfo = function(user_name, pokemon, callback) {
   });
 }
 
+Pokemon.prototype.delPokemonInfo = function(user_name, name, callback) {
+  client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
+    party_obj = JSON.parse(party);
+    delete party_obj[name];
+    client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(party_obj));
+    callback(null, 'result');
+  });
+}
+
 Pokemon.prototype.getExpTable = function(callback) {
   callback(null, this.exp_table);
 }
@@ -295,7 +312,6 @@ Pokemon.prototype.getPokemon = function(user_name, num, callback) {
   request.get(url, function(err, res, mon) {
     mon = JSON.parse(mon);
     Pokemon.prototype.calculateStatus(mon, 1, function(err, calculated_info) {
-      console.log(calculated_info);
       pokemon = {
         "name": mon.name,
         "resource_uri": mon.resource_uri,
@@ -315,7 +331,6 @@ Pokemon.prototype.getPokemon = function(user_name, num, callback) {
           party_obj = {};
         }
         party_obj[pokemon.name] = pokemon;
-        console.log(party_obj);
         client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(party_obj));
         callback(null, 'success', pokemon);
       });
