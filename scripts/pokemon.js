@@ -88,7 +88,7 @@ module.exports = function(robot) {
         pokemon.getParty(user_name, function(err, party) {
           party = JSON.parse(party);
           Object.keys(party).forEach(function(key) {
-            mon = party[key];
+            var mon = party[key];
             mon.hp = mon.max_hp;
             pokemon.setPokemonInfo(user_name, mon, function(err, result) {
             });
@@ -181,7 +181,7 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\sadmin\sunlock$/i, function(msg) {
-    user_name = msg.message.user.name;
+    var user_name = msg.message.user.name;
     if (user_name == 'sasarky') {
       pokemon.unlock(function(err, result) {
         msg.send("unlock しました");
@@ -192,7 +192,7 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\sstatus$/i, function(msg) {
-    user_name = msg.message.user.name;
+    var user_name = msg.message.user.name;
     pokemon.getUserInfo(user_name, function(err, info) {
       msg.send(printf("%s の情報\n所持金: %s円\nバッジ数: %s", user_name, info.money, 0));
     });
@@ -200,7 +200,7 @@ module.exports = function(robot) {
 
   // New Pokemon
   robot.respond(/pokemon\sparty$/i, function(msg) {
-    user_name = msg.message.user.name;
+    var user_name = msg.message.user.name;
     msg.send(user_name + " のパーティ");
     pokemon.getParty(user_name, function(err, party) {
       party = JSON.parse(party);
@@ -215,7 +215,6 @@ module.exports = function(robot) {
 
   // 最初のポケモンを手に入れられるやつ
   robot.respond(/pokemon\sokido$/i, function(msg) {
-    key = 'okido';
     user_name = msg.message.user.name;
 
     async.waterfall([
@@ -250,7 +249,7 @@ module.exports = function(robot) {
       // 選択中
       function(callback) {
         // ふしぎだね、ぜにがめ、ひとかげ
-        firstPokemons = [1, 4, 7];
+        var firstPokemons = [1, 4, 7];
         msg.send(printf("%s 君よ、最初のポケモンはこいつらじゃ\n好きなポケモンの番号を選ぶのじゃ", user_name));
         firstPokemons.forEach(function(i) {
           url = printf("api/v1/pokemon/%s", i);
@@ -266,7 +265,7 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\sokido\sselect\s(.*)$/i, function(msg) {
-    user_name = msg.message.user.name;
+    var user_name = msg.message.user.name;
 
     async.waterfall([
       // 操作チェック
@@ -301,7 +300,7 @@ module.exports = function(robot) {
       },
       // 番号チェック
       function(callback) {
-        select_num = Number(msg.match[1]);
+        var select_num = Number(msg.match[1]);
         if ([1, 4, 7].indexOf(select_num) != -1) {
           pokemon.getPokemon(user_name, select_num, function(err, result, mon) {
             if (result == "success") {
@@ -328,6 +327,7 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\sbouken$/i, function(msg) {
+    var user_name;
     async.waterfall([
       // 操作チェック
       function(callback) {
@@ -401,8 +401,8 @@ module.exports = function(robot) {
       },
       function(my_poke, enemy, callback) {
         // とりあえず今は面倒なので足し算で済ませる
-        my_poke_power = my_poke.attack + my_poke.defense + my_poke.sp_atk + my_poke.sp_def + my_poke.speed;
-        enemy_power = enemy.attack + enemy.defense + enemy.sp_atk + enemy.sp_def + enemy.speed;
+        var my_poke_power = my_poke.attack + my_poke.defense + my_poke.sp_atk + my_poke.sp_def + my_poke.speed;
+        var enemy_power = enemy.attack + enemy.defense + enemy.sp_atk + enemy.sp_def + enemy.speed;
         if (my_poke_power > enemy_power) {
           my_poke.hp = Math.floor(my_poke.hp - (enemy_power / 10));
           if (my_poke.hp < 0) {
@@ -469,6 +469,5 @@ module.exports = function(robot) {
       },
     ]);
   });
-
 
 }
