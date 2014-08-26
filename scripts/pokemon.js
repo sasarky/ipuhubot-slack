@@ -52,7 +52,6 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\scenter$/i, function(msg) {
-    user_name = msg.message.user.name;
     async.waterfall([
       function(callback) {
         pokemon.checkLock(function(err, lock) {
@@ -60,6 +59,7 @@ module.exports = function(robot) {
             msg.send("だれかが操作中ですわ。明後日きやがれ");
             return;
           } else {
+            user_name = msg.message.user.name;
             pokemon.lock(user_name, function(err, result) {
               setTimeout(function() {
                 callback(null);
@@ -328,8 +328,6 @@ module.exports = function(robot) {
   });
 
   robot.respond(/pokemon\sbouken$/i, function(msg) {
-    user_name = msg.message.user.name;
-
     async.waterfall([
       // 操作チェック
       function(callback) {
@@ -338,6 +336,7 @@ module.exports = function(robot) {
             msg.send("おっと誰かが操作中じゃ");
             return;
           } else {
+            user_name = msg.message.user.name;
             pokemon.lock(user_name, function(err, result) {
               callback(null);
             });
