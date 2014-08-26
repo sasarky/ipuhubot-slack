@@ -232,15 +232,15 @@ Pokemon.prototype.unlock = function(callback) {
 
 Pokemon.prototype.getUserInfo = function(user_name, callback) {
   client.get(printf('hubot:pokemon:user:%s', user_name), function(err, body) {
-    user_info = JSON.parse(body);
-    callback(null, user_info);
+    var body = JSON.parse(body);
+    callback(null, body);
   });
 }
 
 Pokemon.prototype.calculateStatus = function(pokemon, level, callback) {
   url = printf("http://pokeapi.co/%s", pokemon.resource_uri);
   request.get(url, function(err, res, body) {
-    body = JSON.parse(body);
+    var body = JSON.parse(body);
     calculated_info = {};
     calculated_info.hp = Math.floor(body.hp * 2 * level / 100 + level + 10);
     calculated_info.attack = Math.floor((body.attack * 2) * level / 100 + 5);
@@ -266,7 +266,7 @@ Pokemon.prototype.setUserInfo = function(user_name, info, callback) {
 }
 
 Pokemon.prototype.setTutorial = function(user_name, callback) {
-  user_info = {
+  var user_info = {
     'tutorial': true,
     'money': 10000
   };
@@ -282,18 +282,17 @@ Pokemon.prototype.getParty = function(user_name, callback) {
 
 Pokemon.prototype.getMyPokemon = function(user_name, callback) {
   client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
-    party = JSON.parse(party);
-    first_mon = _.first(Object.keys(party), 1);
+    var party = JSON.parse(party);
+    var first_mon = _.first(Object.keys(party), 1);
     callback(null, party[first_mon]);
   });
 }
 
 Pokemon.prototype.setPokemonInfo = function(user_name, pokemon, callback) {
-  console.log(pokemon);
   client.get(printf('hubot:pokemon:party:%s', user_name), function(err, party) {
-    party_obj = JSON.parse(party);
-    party_obj[pokemon.name] = pokemon;
-    client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(party_obj));
+    var party = JSON.parse(party);
+    party[pokemon.name] = pokemon;
+    client.set(printf('hubot:pokemon:party:%s', user_name), JSON.stringify(party));
     callback(null, 'result');
   });
 }
