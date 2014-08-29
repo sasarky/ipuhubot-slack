@@ -47,4 +47,15 @@ module.exports = function(robot) {
     });
   }).start();
   // }}}
+
+  new cronJob('0 0 8 * * 1,2,3,4,5', function() {
+    request.get("http://zekkei-switch.herokuapp.com/locations/fetch_location.json", function(error, response, body) {
+      if (response.statusCode == 200) {
+        data = JSON.parse(body);
+        msg.send(printf("%s\n%s\n%s", data.name, data.description, data.photo));
+      } else {
+        msg.send('error');
+      }
+    });
+  }).start();
 }
