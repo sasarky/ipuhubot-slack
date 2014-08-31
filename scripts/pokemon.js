@@ -12,6 +12,7 @@ var printf = require('printf')
 var client = require('redis').createClient()
 
 module.exports = function(robot) {
+  /*
   // ランダムで出現させる
   new cronJob('0 0 5 * * *', function() {
     async.waterfall([
@@ -43,71 +44,6 @@ module.exports = function(robot) {
       }
     ]);
   }).start();
-
-  // NOTE: ここは hogheoge rank と merge させたい
-  robot.respond(/pokemon\srank$/i, function(msg) {
-    pokemon.getDamageRank(function(err, body) {
-      msg.send(body.key.replace(/hubot:dekaipu:damage:/, '') + ": " + body.damage)
-    });
-  });
-
-  robot.respond(/pokemon\scenter$/i, function(msg) {
-    async.waterfall([
-      function(callback) {
-        pokemon.checkLock(function(err, lock) {
-          if (lock != "false" && lock != null) {
-            msg.send("だれかが操作中ですわ。明後日きやがれ");
-            return;
-          } else {
-            user_name = msg.message.user.name;
-            pokemon.lock(user_name, function(err, result) {
-              setTimeout(function() {
-                callback(null);
-              }, 1000);
-            });
-          }
-        })
-      },
-      function(callback) {
-        pokemon.getUserInfo(user_name, function(err, info) {
-          if (info.money < 100) {
-            msg.send(printf("金もってねえやつはくんな！"));
-            pokemon.unlock(function(err, result) {
-              return;
-            });
-          } else {
-            msg.send(printf("いらっしゃいませ。一回100円です"));
-            info.money = Number(info.money) - 100;
-            setTimeout(function() {
-              callback(null, info);
-            }, 1000);
-          }
-        });
-      },
-      function(info, callback) {
-        pokemon.getParty(user_name, function(err, party) {
-          party = JSON.parse(party);
-          Object.keys(party).forEach(function(key) {
-            var mon = party[key];
-            mon.hp = mon.max_hp;
-            pokemon.setPokemonInfo(user_name, mon, function(err, result) {
-            });
-          });
-          setTimeout(function() {
-            callback(null, info);
-          }, 1000);
-        });
-      },
-      function(info, callback) {
-        msg.send("回復しました");
-        pokemon.setUserInfo(user_name, info, function(err, result) {
-          pokemon.unlock(function(err, result) {
-            return;
-          });
-        });
-      },
-    ]);
-  });
 
   robot.respond(/pokemon\sbattle$/i, function(msg) {
     async.waterfall([
@@ -173,6 +109,72 @@ module.exports = function(robot) {
           }
         });
       }
+    ]);
+  });
+  */
+
+  // NOTE: ここは hogheoge rank と merge させたい
+  robot.respond(/pokemon\srank$/i, function(msg) {
+    pokemon.getDamageRank(function(err, body) {
+      msg.send(body.key.replace(/hubot:dekaipu:damage:/, '') + ": " + body.damage)
+    });
+  });
+
+  robot.respond(/pokemon\scenter$/i, function(msg) {
+    async.waterfall([
+      function(callback) {
+        pokemon.checkLock(function(err, lock) {
+          if (lock != "false" && lock != null) {
+            msg.send("だれかが操作中ですわ。明後日きやがれ");
+            return;
+          } else {
+            user_name = msg.message.user.name;
+            pokemon.lock(user_name, function(err, result) {
+              setTimeout(function() {
+                callback(null);
+              }, 1000);
+            });
+          }
+        })
+      },
+      function(callback) {
+        pokemon.getUserInfo(user_name, function(err, info) {
+          if (info.money < 100) {
+            msg.send(printf("金もってねえやつはくんな！"));
+            pokemon.unlock(function(err, result) {
+              return;
+            });
+          } else {
+            msg.send(printf("いらっしゃいませ。一回100円です"));
+            info.money = Number(info.money) - 100;
+            setTimeout(function() {
+              callback(null, info);
+            }, 1000);
+          }
+        });
+      },
+      function(info, callback) {
+        pokemon.getParty(user_name, function(err, party) {
+          party = JSON.parse(party);
+          Object.keys(party).forEach(function(key) {
+            var mon = party[key];
+            mon.hp = mon.max_hp;
+            pokemon.setPokemonInfo(user_name, mon, function(err, result) {
+            });
+          });
+          setTimeout(function() {
+            callback(null, info);
+          }, 1000);
+        });
+      },
+      function(info, callback) {
+        msg.send("回復しました");
+        pokemon.setUserInfo(user_name, info, function(err, result) {
+          pokemon.unlock(function(err, result) {
+            return;
+          });
+        });
+      },
     ]);
   });
 
