@@ -353,41 +353,41 @@ module.exports = function(robot) {
               return;
             });
           } else {
-            msg.send("さあ今日は冒険にでかけよう!");
-            callback(null);
+            pokemon.selectDungeon(user_name, function(err, dungeon) {
+              msg.send(printf("さあ今日は %s にでかけよう!", dungeon.name));
+              callback(null, dungeon);
+            });
           }
         });
       },
-      function(callback) {
+      function(dungeon, callback) {
+        // getMyPokemon の時点でステータス計算してても良いかも
         pokemon.getMyPokemon(user_name, function(err, my_poke) {
           if (my_poke.hp <= 0 ) {
             msg.send("手持ちのポケモンが瀕死だ！ポケモンセンターにいって回復しよう");
-            pokemon.unlock(function(err, result) {
-              return;
-            });
+            pokemon.unlock(function(err, result) { return; });
           } else {
-            callback(null, my_poke);
+            callback(null, my_poke, dungeon);
           }
         });
       },
-      function(my_poke, callback) {
+      function(my_poke, dungeon, callback) {
         // とりあえず今はランダムで
-        pokemon.getPokemonRandom(function(err, enemy) {
-          pokemon.getPokemonInfo(enemy.resource_uri, function(err2, enemy_info) {
-            pokemon.getPokemonImg(enemy.name, function(err3, img) {
-              pokemon.calculateStatus(enemy_info, 1, function(err, enemy_cal) {
-                // 上書きしちゃう
-                enemy_info.hp = enemy_cal.hp;
-                enemy_info.attack = enemy_cal.attack;
-                enemy_info.defense = enemy_cal.defense;
-                enemy_info.sp_atk = enemy_cal.sp_atk;
-                enemy_info.sp_def = enemy_cal.sp_def;
-                enemy_info.speed = enemy_cal.speed;
-                msg.send(printf("%s が現れた！\nHP:%s, ATK:%s, DEF:%s\n%s", enemy_info.name, enemy_info.hp, enemy_info.attack + enemy_info.sp_atk, enemy_info.defense + enemy_info.sp_def, img));
-                setTimeout(function() {
-                  callback(null, my_poke, enemy_info);
-                }, 1000);
-              });
+        enemy = dungeon.enemies[_.sample(Object.keys(dungeon.enemies))];
+        pokemon.getPokemonInfo(enemy.resource_uri, function(err2, enemy_info) {
+          pokemon.getPokemonImg(enemy.name, function(err3, img) {
+            pokemon.calculateStatus(enemy_info, enemy.level, function(err, enemy_cal) {
+              // 上書きしちゃう
+              enemy_info.hp = enemy_cal.hp;
+              enemy_info.attack = enemy_cal.attack;
+              enemy_info.defense = enemy_cal.defense;
+              enemy_info.sp_atk = enemy_cal.sp_atk;
+              enemy_info.sp_def = enemy_cal.sp_def;
+              enemy_info.speed = enemy_cal.speed;
+              msg.send(printf("Lv %s の %s が現れた！\nHP:%s, ATK:%s, DEF:%s\n%s", enemy.level, enemy_info.name, enemy_info.hp, enemy_info.attack + enemy_info.sp_atk, enemy_info.defense + enemy_info.sp_def, img));
+              setTimeout(function() {
+                callback(null, my_poke, enemy_info);
+              }, 1000);
             });
           });
         });

@@ -310,6 +310,23 @@ Pokemon.prototype.getExpTable = function(callback) {
   callback(null, this.exp_table);
 }
 
+Pokemon.prototype.selectDungeon = function(user_name, callback) {
+  client.get(printf('hubot:pokemon:user:%s', user_name), function(err, info) {
+    info = JSON.parse(info);
+    console.log(info);
+    var next_dungeon_id = 1;
+    if (info.dungeon_progress != null) {
+      // とりあえず今は一個しかダンジョンないからここは次つくる
+      keys = Object.keys(info.dungeon_progess);
+      console.log(keys);
+    }
+    client.get('hubot:pokemon:dungeons', function(err, dungeons) {
+      dungeons = JSON.parse(dungeons);
+      callback(null, dungeons[next_dungeon_id]);
+    });
+  });
+}
+
 // get っていうのはポケモンゲットだぜ！の get です
 Pokemon.prototype.getPokemon = function(user_name, num, callback) {
   url = printf("http://pokeapi.co/api/v1/pokemon/%s", num);
