@@ -2,10 +2,11 @@
 //   Pokemon
 
 var async = require('async');
-var request = require('request');
-var printf = require('printf');
-var _ = require('underscore');
 var client = require('redis').createClient()
+var github = require('githubot');
+var printf = require('printf');
+var request = require('request');
+var _ = require('underscore');
 
 var Pokemon = function() {
   this.api = 'http://pokeapi.co';
@@ -311,17 +312,16 @@ Pokemon.prototype.getExpTable = function(callback) {
 }
 
 Pokemon.prototype.selectDungeon = function(user_name, callback) {
+  var url = "https://api.github.com/gists/a306b2ca7a3fc0106046";
   client.get(printf('hubot:pokemon:user:%s', user_name), function(err, info) {
     info = JSON.parse(info);
-    console.log(info);
     var next_dungeon_id = 1;
     if (info.dungeon_progress != null) {
       // とりあえず今は一個しかダンジョンないからここは次つくる
       keys = Object.keys(info.dungeon_progess);
-      console.log(keys);
     }
-    client.get('hubot:pokemon:dungeons', function(err, dungeons) {
-      dungeons = JSON.parse(dungeons);
+    github.get(url, function (body) {
+      dungeons = JSON.parse(body.files['dungeons.json'].content);
       callback(null, dungeons[next_dungeon_id]);
     });
   });

@@ -354,7 +354,7 @@ module.exports = function(robot) {
             });
           } else {
             pokemon.selectDungeon(user_name, function(err, dungeon) {
-              msg.send(printf("さあ今日は %s にでかけよう!", dungeon.name));
+              msg.send(printf("さあ今日は %s にでかけよう!", dungeon.japanese_name));
               callback(null, dungeon);
             });
           }
@@ -384,7 +384,7 @@ module.exports = function(robot) {
               enemy_info.sp_atk = enemy_cal.sp_atk;
               enemy_info.sp_def = enemy_cal.sp_def;
               enemy_info.speed = enemy_cal.speed;
-              msg.send(printf("Lv %s の %s が現れた！\nHP:%s, ATK:%s, DEF:%s\n%s", enemy.level, enemy_info.name, enemy_info.hp, enemy_info.attack + enemy_info.sp_atk, enemy_info.defense + enemy_info.sp_def, img));
+              msg.send(printf("Lv %s の %s が現れた！\nHP:%s, ATK:%s, DEF:%s\n%s", enemy.level, enemy.japanese_name, enemy_info.hp, enemy_info.attack + enemy_info.sp_atk, enemy_info.defense + enemy_info.sp_def, img));
               setTimeout(function() {
                 callback(null, my_poke, enemy_info);
               }, 1000);
