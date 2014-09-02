@@ -2,8 +2,13 @@
 //   Pokemon
 
 var async = require('async');
-var redis = require('redis');
+var github = require('githubot');
+var printf = require('printf');
+var request = require('request');
+var _ = require('underscore');
+
 var url = require("url");
+var redis = require('redis');
 var client;
 if (process.env.REDISTOGO_URL) {
   var rtg = url.parse(process.env.REDISTOGO_URL);
@@ -12,10 +17,6 @@ if (process.env.REDISTOGO_URL) {
 } else {
   client = redis.createClient();
 }
-var github = require('githubot');
-var printf = require('printf');
-var request = require('request');
-var _ = require('underscore');
 
 var Pokemon = function() {
   this.api = 'http://pokeapi.co';
