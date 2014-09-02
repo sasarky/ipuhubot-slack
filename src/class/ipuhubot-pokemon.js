@@ -269,7 +269,7 @@ Pokemon.prototype.setUserInfo = function(user_name, info, callback) {
 Pokemon.prototype.setTutorial = function(user_name, callback) {
   var user_info = {
     'tutorial': true,
-    'money': 10000
+    'money': 100
   };
   client.set(printf('hubot:pokemon:user:%s', user_name), JSON.stringify(user_info));
   callback(null, user_info);
