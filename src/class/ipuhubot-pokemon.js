@@ -234,6 +234,7 @@ Pokemon.prototype.unlock = function(callback) {
 Pokemon.prototype.getUserInfo = function(user_name, callback) {
   client.get(printf('hubot:pokemon:user:%s', user_name), function(err, body) {
     var body = JSON.parse(body);
+    console.log("test 1.1");
     callback(null, body);
   });
 }

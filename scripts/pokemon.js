@@ -218,14 +218,14 @@ module.exports = function(robot) {
   // 最初のポケモンを手に入れられるやつ
   robot.respond(/pokemon\sokido$/i, function(msg) {
     user_name = msg.message.user.name;
-    console.log("test");
-    msg.send("テスト");
+    console.log("test 1");
 
     async.waterfall([
       // チュートリアルチェック
       function(callback) {
         pokemon.getUserInfo(user_name, function(err, info) {
           if (info == null) {
+            console.log("test 1.2");
             callback(null);
           } else if (info.tutorial == true) {
             msg.send("お前さんはすでにポケモンを手に入れているようじゃ");
@@ -237,11 +237,15 @@ module.exports = function(robot) {
       },
       // 操作チェック
       function(callback) {
+        console.log("test 2");
         pokemon.checkLock(function(err, lock) {
+          console.log("test 2.0.1");
           if (lock != "false" && lock != null) {
+            console.log("test 2.1");
             msg.send("おっと誰かが操作中のようじゃ");
             return;
           } else {
+            console.log("test 2.2");
             pokemon.lock(user_name, function(err, result) {
               setTimeout(function() {
                 callback(null);
