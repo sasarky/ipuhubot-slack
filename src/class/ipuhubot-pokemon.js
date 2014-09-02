@@ -3,6 +3,7 @@
 
 var async = require('async');
 var redis = require('redis');
+var url = require("url");
 var client;
 if (process.env.REDISTOGO_URL) {
   var rtg = url.parse(process.env.REDISTOGO_URL);
