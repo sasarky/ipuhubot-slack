@@ -9,6 +9,7 @@ async = require('async')
 child_process = require('child_process');
 github = require('githubot');
 printf = require('printf');
+request = require('request');
 
 module.exports = function(robot) {
   url_api_base = "https://api.github.com";
@@ -29,49 +30,13 @@ module.exports = function(robot) {
     });
   });
 
-  robot.respond(/UPGRADE\sTEST$/i, function (msg) {
-    child_process.exec('cd ../ipuhubot_test; git pull; mocha -R spec test/test.js', function(error, stdout, stderr) {
-      msg.send(stdout);
-    });
-  });
-
   robot.respond(/UPGRADE\sEXECUTE$/i, function(msg) {
-    async.waterfall([
-      function(callback) {
-        msg.send("ごごごごごごご");
-        setTimeout(function() {
-          github.branches("sasarky/ipuhubot-slack").merge("develop", function(branches) {
-            msg.send("進化の準備が整いました");
-            setTimeout(function() {
-              callback(null);
-            }, 1000);
-          });
-        }, 1000);
-      },
-      function(callback) {
-        child_process.exec('git pull', function(error, stdout, stderr) {
-          if (error) {
-            msg.send("失敗しちゃった。。。");
-            return;
-          } else {
-            msg.send("ぶおおおおおおおん！！！！");
-            msg.send(stdout);
-
-            setTimeout(function() {
-              callback(null);
-            }, 1000);
-          }
-        });
-      },
-      function(callback) {
-        msg.send("適合中です");
-        setTimeout(function() {
-          msg.send("進化しました！");
-          setTimeout(function() {
-            process.exit();
-          }, 10000);
-        }, 1000);
+    msg.send("デプロイしますよー！！！");
+    var url = printf("http://%s@jenkins.sasarky.net/job/ipuhubot/build?delay=0sec", process.env.HUBOT_JENKINS_TOKEN);
+    request.post(url, function(err, res, body) {
+      if (err == null) {
+        msg.send("デプロイ完了しました！褒めて褒めて！");
       }
-    ]);
+    });
   });
 }
