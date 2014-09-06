@@ -19,10 +19,8 @@ git checkout -b feature/hogefuga
 \.js でもよくなりました(js 推奨)
 ### develop branch に pull req を送ってレビューしてもらう
 on the web !!
-### そしたらあとは適当に
-頑張る
 ### merge されたら
-ipukun upgrade する
+かってに JENKINS おじさんがやってくれるはず(理想)
 
 # その他
 Happy Hacking
