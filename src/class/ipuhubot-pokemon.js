@@ -322,18 +322,36 @@ Pokemon.prototype.getExpTable = function(callback) {
   callback(null, this.exp_table);
 }
 
-Pokemon.prototype.selectDungeon = function(user_name, callback) {
+Pokemon.prototype.progressDungeon = function(user_name) {
+  client.get(printf('hubot:pokemon:user:%s', user_name), function(err, info) {
+    info = JSON.parse(info);
+    var current_dungeon = info.current_dungeon;
+    if (info.dungeon_progress != null && info.dungeon_progress[current_dungeon] != null) {
+      info.dungeon_progress[current_dungeon].progress++;
+    } else {
+      info.dungeon_progress[current_dungeon] = {progress: 1};
+      info.current_dungeon = 1;
+    }
+    client.set(printf('hubot:pokemon:user:%s', user_name), JSON.stringify(info));
+  });
+}
+
+Pokemon.prototype.getCurrentDungeon = function(user_name, callback) {
   var url = "https://api.github.com/gists/a306b2ca7a3fc0106046";
   client.get(printf('hubot:pokemon:user:%s', user_name), function(err, info) {
     info = JSON.parse(info);
-    var next_dungeon_id = 1;
-    if (info.dungeon_progress != null) {
-      // とりあえず今は一個しかダンジョンないからここは次つくる
-      keys = Object.keys(info.dungeon_progess);
+    var current_dungeon;
+    if (info.current_dungeon != null) {
+      current_dungeon = info.current_dungeon;
+    } else {
+      info.dungeon_progress = {};
+      info.current_dungeon = 1;
+      client.set(printf('hubot:pokemon:user:%s', user_name), JSON.stringify(info));
     }
     github.get(url, function (body) {
       dungeons = JSON.parse(body.files['dungeons.json'].content);
-      callback(null, dungeons[next_dungeon_id]);
+      // TODO: add err handl
+      callback(null, dungeons[current_dungeon]);
     });
   });
 }

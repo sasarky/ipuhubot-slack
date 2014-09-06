@@ -369,7 +369,7 @@ module.exports = function(robot) {
               return;
             });
           } else {
-            pokemon.selectDungeon(user_name, function(err, dungeon) {
+            pokemon.getCurrentDungeon(user_name, function(err, dungeon) {
               msg.send(printf("さあ今日は %s にでかけよう!", dungeon.japanese_name));
               callback(null, dungeon);
             });
@@ -388,7 +388,6 @@ module.exports = function(robot) {
         });
       },
       function(my_poke, dungeon, callback) {
-        // とりあえず今はランダムで
         enemy = dungeon.enemies[_.sample(Object.keys(dungeon.enemies))];
         pokemon.getPokemonInfo(enemy.resource_uri, function(err2, enemy_info) {
           pokemon.getPokemonImg(enemy.name, function(err3, img) {
@@ -426,6 +425,7 @@ module.exports = function(robot) {
           if (my_poke.hp < 0) {
             my_poke.hp = 0;
           }
+          pokemon.progressDungeon(user_name);
           msg.send(printf("やったぞ！バトルに勝利し%sの経験値をゲットした!", enemy.exp));
           pokemon.getExpTable(function(err, exp_table) {
             my_poke.exp = my_poke.exp + enemy.exp;
@@ -476,6 +476,9 @@ module.exports = function(robot) {
         } else {
           my_poke.hp = 0;
           msg.send("バトルに負けた。目の前が真っ暗になった");
+          setTimeout(function() {
+            callback(null, my_poke);
+          }, 1000);
         }
       },
       function(my_poke, callback) {
