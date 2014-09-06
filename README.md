@@ -1,9 +1,5 @@
 # IPUHubot
     IPU君 BOT だよ
-## 機能一覧
-### ipukun upgrade
-    IPU君は自分で進化するのだ！
-### iroiro
 
 # 開発方法
 ## 新機能追加
