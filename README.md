@@ -4,6 +4,8 @@
 # 開発方法
 ## 新機能追加
 /script の下に配置すれば勝手に読み込んでくれるっぽい
+class file は /src/class の下におくことにしてます
+
 ## ローカルでのテスト方法
 下記コマンドで要 check it out!
     $ bin/hubot
@@ -16,7 +18,7 @@ git checkout -b feature/hogefuga
 ### develop branch に pull req を送ってレビューしてもらう
 on the web !!
 ### merge されたら
-かってに JENKINS おじさんがやってくれるはず(理想)
+  ipukun upgrade execute
 
 # その他
 Happy Hacking
