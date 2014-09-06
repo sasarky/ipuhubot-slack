@@ -228,7 +228,6 @@ module.exports = function(robot) {
   // 最初のポケモンを手に入れられるやつ
   robot.respond(/pokemon\sokido$/i, function(msg) {
     user_name = msg.message.user.name;
-    console.log("test 1");
 
     async.waterfall([
       // チュートリアルチェック
