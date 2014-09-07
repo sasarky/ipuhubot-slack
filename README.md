@@ -1,11 +1,9 @@
 # IPUHubot
-    IPU君 BOT だよ
-
+    IPU君 BOT だよ。
 # 開発方法
 ## 新機能追加
 /script の下に配置すれば勝手に読み込んでくれるっぽい
 class file は /src/class の下におくことにしてます
-
 ## ローカルでのテスト方法
 下記コマンドで要 check it out!
     $ bin/hubot
@@ -19,6 +17,5 @@ git checkout -b feature/hogefuga
 on the web !!
 ### merge されたら
   ipukun upgrade execute
-
 # その他
 Happy Hacking
