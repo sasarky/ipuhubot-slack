@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var printf = require('printf')
 
+var url = require("url");
 var redis = require('redis');
 var client;
 if (process.env.REDISTOGO_URL) {
