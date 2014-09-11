@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var printf = require('printf')
+var dateformat = require("dateformat");
 
 var url = require("url");
 var redis = require('redis');
@@ -22,7 +23,9 @@ module.exports = function(robot) {
       if (val == null) {
         val = [];
       }
-      val.push(user_name + ": " + msg.message.text);
+
+      var date = new Date();
+      val.push(printf("[%s] %s: %s", dateformat(new Date(), "HH:MM:ss") ,user_name ,msg.message.text));
 
       if (val.length > 100) {
         val.shift();
