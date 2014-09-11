@@ -4,13 +4,13 @@ var printf = require('printf')
 var url = require("url");
 var redis = require('redis');
 var client;
-//if (process.env.REDISTOGO_URL) {
-//  var rtg = url.parse(process.env.REDISTOGO_URL);
-//  client = redis.createClient(rtg.port, rtg.hostname);
-//  client.auth(rtg.auth.split(":")[1]);
-//} else {
+if (process.env.REDISTOGO_URL) {
+  var rtg = url.parse(process.env.REDISTOGO_URL);
+  client = redis.createClient(rtg.port, rtg.hostname);
+  client.auth(rtg.auth.split(":")[1]);
+} else {
   client = redis.createClient();
-//}
+}
 
 module.exports = function(robot) {
   // BOT の名前とってきたい
