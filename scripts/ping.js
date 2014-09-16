@@ -81,6 +81,10 @@ module.exports = function(robot) {
     msg.send("http://agora.ex.nii.ac.jp/digital-typhoon/radar/graphics/east-i.jpg");
   });
 
+  robot.respond(/ohayo$/i, function(msg) {
+    msg.send("おはよう!");
+  });
+
   robot.hear(/^(.*\s)?(\w*)([\+|\-]{2})$/i, function(msg) {
     if (msg.match[1]) {
       user = msg.match[1].replace(/[\s|\:]/g, '');
