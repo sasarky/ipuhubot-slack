@@ -11,7 +11,6 @@ var printf = require('printf');
 var request = require('request');
 var cheerio = require('cheerio-httpcli');
 var _ = require('underscore');
-var qiita = require('../src/class/ipuhubot-qiita')
 
 var url = require("url");
 var redis = require('redis');
@@ -128,10 +127,12 @@ module.exports = function(robot) {
   });
 
   robot.respond(/QIITA\sRANK$/i, function(msg) {
-    users = ['sasarkyz', '7kaji', 'otukutun', 'isseium', 'n0bisuke', 'te2ka', 'canno', 's4shiki'];
+    users = ['sasarkyz', '7kaji', 'otukutun', 'isseium', 'n0bisuke', 'kazuhikoyamashita'];
     users.forEach(function(user) {
-      qiita.getStockCount(user, function(sum) {
-        msg.send(printf("%s: %s", user, sum));
+      url = "http://qiita.com/" + user;
+      cheerio.fetch(url, {}, function (err, $, res){
+        count = $('.second-line')[0].children[1].children[0].data;
+        msg.send(user + ": " + count);
       });
     });
   });
