@@ -21,7 +21,7 @@ module.exports = function(robot) {
 
   // {{{ WeekDay
   new cronJob('0 0 9 * * 1,2,3,4,5', function() {
-    send("#general", "今日も一日がんばりましょー！");
+    send("#general", "https://qiita-image-store.s3.amazonaws.com/0/29945/9e4bd52c-3fc3-a7c2-e8d2-b9911db5b5c8.png");
     meigen.get('', function(body) {
       if (body == 'error') {
         send("#general", "No meigen No Life");
@@ -47,15 +47,4 @@ module.exports = function(robot) {
     });
   }).start();
   // }}}
-
-  new cronJob('0 0 8 * * 1,2,3,4,5', function() {
-    request.get("http://zekkei-switch.herokuapp.com/locations/fetch_location.json", function(error, response, body) {
-      if (response.statusCode == 200) {
-        data = JSON.parse(body);
-        msg.send(printf("%s\n%s\n%s", data.name, data.description, data.photo));
-      } else {
-        msg.send('error');
-      }
-    });
-  }).start();
 }
