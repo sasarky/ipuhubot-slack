@@ -137,7 +137,7 @@ module.exports = function(robot) {
     });
   });
 
-  robot.hear(/zekkei$/i, function(msg) {
+  robot.respond(/zekkei$/i, function(msg) {
     request.get("http://zekkei-switch.herokuapp.com/locations/fetch_location.json", function(error, response, body) {
       if (response.statusCode == 200) {
         data = JSON.parse(body);
@@ -148,4 +148,26 @@ module.exports = function(robot) {
     });
   });
 
+  robot.respond(/zekkei\squestion$/i, function(msg) {
+    request.get("http://zekkei-switch.herokuapp.com/locations/fetch_location.json", function(error, response, body) {
+      if (response.statusCode == 200) {
+        data = JSON.parse(body);
+        msg.send(printf("ここどーこだ？\n%s", data.photo));
+        client.set('hubot:zekkei:question', data.name);
+      } else {
+        msg.send('error');
+      }
+    });
+  });
+
+  robot.respond(/zekkei\sanswer\s(.*)$/i, function(msg) {
+    client.get('hubot:zekkei:question', function(err, val) {
+      ans = msg.match[1];
+      if (ans == val) {
+        msg.send('ぴんぽーん！');
+      } else {
+        msg.send(printf('ぶぶー！答えは %s でしたー！', val));
+      }
+    });
+  });
 }
