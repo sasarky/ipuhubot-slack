@@ -23,11 +23,9 @@ module.exports = function(robot) {
       if (val) {
         queues = JSON.parse(val);
       }
-      queues[video_id] = {
-        id: video_id
-      }
-      console.log(queues);
+      queues[video_id] = { id: video_id }
       client.set('hubot:dj:queue', JSON.stringify(queues));
+      msg.send("セトリにいれたよー！\nhttp://ipukun-dj.herokuapp.com/")
     });
   });
 
