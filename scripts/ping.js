@@ -33,6 +33,14 @@ module.exports = function(robot) {
     msg.send(user + ": YO!");
   });
 
+  robot.hear(/kikkake$/i, function(msg) {
+    var url = 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&q=http://rss.dailynews.yahoo.co.jp/fc/rss.xml&num=1'
+    request.get(url, function(err, res, body) {
+      entry = _.first(JSON.parse(body)['responseData']['feed']['entries']);
+      msg.send("あ！そうそう！「" + entry.title + "」らしいですよ！\n" + entry.link);
+    });
+  });
+
   robot.respond(/TIME$/i, function(msg) {
     // XXX:moment hogehoge を使いたい
     d = new Date;
