@@ -29,8 +29,33 @@ module.exports = function(robot) {
     delete users[1];
     key = msg.random(Object.keys(users));
     user = users[key].name;
-    console.log(user);
     msg.send(user + ": YO!");
+  });
+
+  robot.hear(/.*/i, function(msg) {
+    room = msg.message.room;
+    client.get('hubot:room_talk_count', function(err, val) {
+      val = JSON.parse(val);
+      if (val == null) {
+        val = {};
+      }
+      if (val[room] == null) {
+        val[room] = 1;
+      } else {
+        val[room]++;
+      }
+      client.set('hubot:room_talk_count', JSON.stringify(val));
+    });
+  });
+
+  robot.respond(/ROOMS$/i, function(msg) {
+    client.get('hubot:room_talk_count', function(err, val) {
+      val = JSON.parse(val);
+      _.map(val, function(count, room_name) {
+        msg.send(room_name + ": " + count);
+      });
+    });
+
   });
 
   robot.hear(/kikkake$/i, function(msg) {
