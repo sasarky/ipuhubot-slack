@@ -4,6 +4,7 @@
 
 var cronJob = require('cron').CronJob;
 var meigen = require('../src/class/ipuhubot-meigen');
+var tenki = require('../src/class/ipuhubot-tenki');
 var printf = require('printf');
 var github = require('githubot');
 var _ = require('underscore');
@@ -16,6 +17,12 @@ module.exports = function(robot) {
   // {{{ Daily
   new cronJob('0 0 0 * * *', function() {
     send("#general", "夜更かししちゃだめだぞ");
+  }).start();
+
+  new cronJob('0 0 8 * * *', function() {
+    tenki.get(function(view_msg) {
+      send("#general", view_msg);
+    });
   }).start();
   // }}}
 

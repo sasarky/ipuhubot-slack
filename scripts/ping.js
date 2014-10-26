@@ -7,6 +7,7 @@
 //   hubot time - Reply with current time
 //   hubot whisper <channel> <txt> - send message to channel
 
+var tenki = require('../src/class/ipuhubot-tenki');
 var printf = require('printf');
 var request = require('request');
 var cheerio = require('cheerio-httpcli');
@@ -30,6 +31,12 @@ module.exports = function(robot) {
     key = msg.random(Object.keys(users));
     user = users[key].name;
     msg.send(user + ": YO!");
+  });
+
+  robot.respond(/TENKI$/i, function(msg) {
+    tenki.get(function(view_msg) {
+      msg.send(view_msg);
+    });
   });
 
   robot.hear(/.*/i, function(msg) {
