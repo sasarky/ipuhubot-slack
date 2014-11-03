@@ -33,8 +33,17 @@ module.exports = function(robot) {
     msg.send(user + ": YO!");
   });
 
-  robot.respond(/TENKI$/i, function(msg) {
-    tenki.get(function(view_msg) {
+  robot.respond(/TENKI(\s(.+))*$/i, function(msg) {
+    var place = 'tokyo'; // default は tokyo にしておこう
+    if (msg.match[2]) {
+      place = msg.match[2];
+      // morioka が morioka-shi で takizawa がないから矯正
+      if (place == 'morioka' || place == 'takizawa') {
+        place = 'morioka-shi'
+      }
+    }
+
+    tenki.get(place, function(view_msg) {
       msg.send(view_msg);
     });
   });
