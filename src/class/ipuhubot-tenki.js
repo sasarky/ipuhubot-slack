@@ -25,7 +25,7 @@ Tenki.prototype.get =  function(callback) {
       if (result.dt < end_unixtime && result.dt >= begin_unixtime) {
         result_dt = new Date((result.dt) * 1000);
         view_time = printf('%02s:%02s', result_dt.getHours(), result_dt.getMinutes());
-        message += printf('%s: %s (%s 度)\n', view_time, result.weather[0].main, Math.floor((5 / 9) * (result.main.temp - 32)))
+        message += printf('%s: %s (%s 度)\n', view_time, result.weather[0].main, Math.floor(result.main.temp - 272))
       }
     });
     callback(message);
