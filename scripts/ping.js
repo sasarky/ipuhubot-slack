@@ -61,7 +61,7 @@ module.exports = function(robot) {
 
     hachipi.add(user, key, description, function(result) {
       if (result.status == 'success') {
-        msg.send(printf('アンケートを用意したよ!\nDescription: %s\nアンケートの答え方: ipukun survey answer %s "内容"', result.survey.description, key));
+        msg.send(printf('アンケートを用意したよ!\nDescription: %s\nアンケートの答え方: ipukun hachipi answer %s "内容"', result.survey.description, key));
       } else {
         msg.send(printf('Error: %s', result.message));
       }
@@ -80,7 +80,7 @@ module.exports = function(robot) {
 
     hachipi.answer(user, key, answer, function(result) {
       if (result.status == 'success') {
-        msg.send(printf('%s のアンケートに答えたよ!\nアンケートの結果の見方: ipukun survey show %s', result.survey.description, key));
+        msg.send(printf('%s のアンケートに答えたよ!\nアンケートの結果の見方: ipukun hachipi show %s', result.survey.description, key));
       } else {
         msg.send(printf('Error: %s', result.message));
       }
