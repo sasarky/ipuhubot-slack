@@ -91,12 +91,13 @@ module.exports = function(robot) {
     key = msg.match[1];
 
     hachipi.show(key, function(result) {
+      console.log(result);
       if (result) {
         var message = '';
         _.each(result.answers, function(answer, user) {
           message = message + printf('%s: %s\n', user, answer.message);
         });
-        msg.send(printf('%s の結果だよ!\n%s', key, message));
+        msg.send(printf('%s の結果だよ!\n%s', result.description, message));
       } else {
         msg.send('そんな質問ないよ！');
       }
