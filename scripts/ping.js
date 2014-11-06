@@ -8,7 +8,7 @@
 //   hubot whisper <channel> <txt> - send message to channel
 
 var tenki = require('../src/class/ipuhubot-tenki');
-var survey = require('../src/class/ipuhubot-survey');
+var hachipi = require('../src/class/ipuhubot-hachipi');
 var printf = require('printf');
 var request = require('request');
 var cheerio = require('cheerio-httpcli');
@@ -49,7 +49,7 @@ module.exports = function(robot) {
     });
   });
 
-  robot.respond(/SURVEY\sADD\s(.*)\s(.*)$/i, function(msg) {
+  robot.respond(/HACHIPI\sADD\s(.*)\s(.*)$/i, function(msg) {
     user = msg.message.user.name;
     key = msg.match[1];
     description = msg.match[2];
@@ -59,7 +59,7 @@ module.exports = function(robot) {
       return;
     }
 
-    survey.add(user, key, description, function(result) {
+    hachipi.add(user, key, description, function(result) {
       if (result.status == 'success') {
         msg.send(printf('アンケートを用意したよ!\nDescription: %s\nアンケートの答え方: ipukun survey answer %s "内容"', result.survey.description, key));
       } else {
@@ -68,7 +68,7 @@ module.exports = function(robot) {
     });
   });
 
-  robot.respond(/SURVEY\sANSWER\s(.*)\s(.*)$/i, function(msg) {
+  robot.respond(/HACHIPI\sANSWER\s(.*)\s(.*)$/i, function(msg) {
     user = msg.message.user.name;
     key = msg.match[1];
     answer = msg.match[2];
@@ -78,7 +78,7 @@ module.exports = function(robot) {
       return;
     }
 
-    survey.answer(user, key, answer, function(result) {
+    hachipi.answer(user, key, answer, function(result) {
       if (result.status == 'success') {
         msg.send(printf('%s のアンケートに答えたよ!\nアンケートの結果の見方: ipukun survey show %s', result.survey.description, key));
       } else {
@@ -87,10 +87,10 @@ module.exports = function(robot) {
     });
   });
 
-  robot.respond(/SURVEY\sSHOW\s(.*)$/i, function(msg) {
+  robot.respond(/HACHIPI\sSHOW\s(.*)$/i, function(msg) {
     key = msg.match[1];
 
-    survey.show(key, function(result) {
+    hachipi.show(key, function(result) {
       if (result) {
         var message = '';
         _.each(result.answers, function(answer, user) {

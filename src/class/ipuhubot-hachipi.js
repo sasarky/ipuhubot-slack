@@ -1,5 +1,5 @@
 // Description:
-//   Survey
+//   Hachipi
 
 var printf = require('printf');
 var request = require('request');
@@ -16,11 +16,11 @@ if (process.env.REDISTOGO_URL) {
   client = redis.createClient();
 }
 
-var Survey = function(){
+var Hachipi = function(){
 }
 
-Survey.prototype.add =  function(user, key, description, callback) {
-  key = printf('hubot:survey:%s', key);
+Hachipi.prototype.add =  function(user, key, description, callback) {
+  key = printf('hubot:hachipi:%s', key);
   client.get(key, function(err, val) {
     if (val) {
       var result = {
@@ -44,8 +44,8 @@ Survey.prototype.add =  function(user, key, description, callback) {
   });
 };
 
-Survey.prototype.answer =  function(user, key, answer, callback) {
-  key = printf('hubot:survey:%s', key);
+Hachipi.prototype.answer =  function(user, key, answer, callback) {
+  key = printf('hubot:hachipi:%s', key);
   client.get(key, function(err, val) {
     if (val) {
       var survey = JSON.parse(val);
@@ -60,7 +60,6 @@ Survey.prototype.answer =  function(user, key, answer, callback) {
           'message': answer
         }
       }
-      console.log(survey);
       client.set(key, JSON.stringify(survey));
       var result = {
         'status': 'success',
@@ -77,11 +76,11 @@ Survey.prototype.answer =  function(user, key, answer, callback) {
   });
 };
 
-Survey.prototype.show =  function(key, callback) {
-  key = printf('hubot:survey:%s', key);
+Hachipi.prototype.show =  function(key, callback) {
+  key = printf('hubot:hachipi:%s', key);
   client.get(key, function(err, val) {
     callback(JSON.parse(val));
   });
 };
 
-module.exports = new Survey
+module.exports = new Hachipi
