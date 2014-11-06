@@ -54,10 +54,13 @@ module.exports = function(robot) {
     key = msg.match[1];
     description = msg.match[2];
 
+    if (!key || !description) {
+      msg.send('Error!');
+      return;
+    }
+
     survey.add(user, key, description, function(result) {
-      console.log(result);
       if (result.status == 'success') {
-        console.log('success');
         msg.send(printf('アンケートを用意したよ!\nDescription: %s\nアンケートの答え方: ipukun survey answer %s "内容"', result.survey.description, key));
       } else {
         msg.send(printf('Error: %s', result.message));
@@ -70,10 +73,13 @@ module.exports = function(robot) {
     key = msg.match[1];
     answer = msg.match[2];
 
+    if (!key || !answer) {
+      msg.send('Error!');
+      return;
+    }
+
     survey.answer(user, key, answer, function(result) {
-      console.log(result);
       if (result.status == 'success') {
-        console.log('success');
         msg.send(printf('%s のアンケートに答えたよ!\nアンケートの結果の見方: ipukun survey show %s', result.survey.description, key));
       } else {
         msg.send(printf('Error: %s', result.message));
