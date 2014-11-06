@@ -8,6 +8,7 @@
 //   hubot whisper <channel> <txt> - send message to channel
 
 var tenki = require('../src/class/ipuhubot-tenki');
+var survey = require('../src/class/ipuhubot-survey');
 var printf = require('printf');
 var request = require('request');
 var cheerio = require('cheerio-httpcli');
@@ -45,6 +46,54 @@ module.exports = function(robot) {
 
     tenki.get(place, function(view_msg) {
       msg.send(view_msg);
+    });
+  });
+
+  robot.respond(/SURVEY\sADD\s(.*)\s(.*)$/i, function(msg) {
+    user = msg.message.user.name;
+    key = msg.match[1];
+    description = msg.match[2];
+
+    survey.add(user, key, description, function(result) {
+      console.log(result);
+      if (result.status == 'success') {
+        console.log('success');
+        msg.send(printf('アンケートを用意したよ!\nDescription: %s\nアンケートの答え方: ipukun survey answer %s "内容"', result.survey.description, key));
+      } else {
+        msg.send(printf('Error: %s', result.message));
+      }
+    });
+  });
+
+  robot.respond(/SURVEY\sANSWER\s(.*)\s(.*)$/i, function(msg) {
+    user = msg.message.user.name;
+    key = msg.match[1];
+    answer = msg.match[2];
+
+    survey.answer(user, key, answer, function(result) {
+      console.log(result);
+      if (result.status == 'success') {
+        console.log('success');
+        msg.send(printf('%s のアンケートに答えたよ!\nアンケートの結果の見方: ipukun survey show %s', result.survey.description, key));
+      } else {
+        msg.send(printf('Error: %s', result.message));
+      }
+    });
+  });
+
+  robot.respond(/SURVEY\sSHOW\s(.*)$/i, function(msg) {
+    key = msg.match[1];
+
+    survey.show(key, function(result) {
+      if (result) {
+        var message = '';
+        _.each(result.answers, function(answer, user) {
+          message = message + printf('%s: %s\n', user, answer.message);
+        });
+        msg.send(printf('%s の結果だよ!\n%s', key, message));
+      } else {
+        msg.send('そんな質問ないよ！');
+      }
     });
   });
 
