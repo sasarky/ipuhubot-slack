@@ -16,6 +16,6 @@ git checkout -b feature/hogefuga
 ### develop branch に pull req を送ってレビューしてもらう
 on the web !!
 ### merge されたら
-  ipukun upgrade execute
+多分かってに deploy してくれる
 # その他
 Happy Hacking
