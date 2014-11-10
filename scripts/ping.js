@@ -9,6 +9,7 @@
 
 var tenki = require('../src/class/ipuhubot-tenki');
 var hachipi = require('../src/class/ipuhubot-hachipi');
+var ipuhubot_target = require('../src/class/ipuhubot-target');
 var printf = require('printf');
 var request = require('request');
 var cheerio = require('cheerio-httpcli');
@@ -32,6 +33,28 @@ module.exports = function(robot) {
     key = msg.random(Object.keys(users));
     user = users[key].name;
     msg.send(user + ": YO!");
+  });
+
+  robot.respond(/TARGET\sSET\s(.+)*$/i, function(msg) {
+    var user = msg.message.user.name;
+    if (msg.match[1]) {
+      var target = msg.match[1];
+      ipuhubot_target.set(user, target, function(result) {
+        if (result.status == 'success') {
+          msg.send('目標設定に成功したよ!\n目標の見方: ipukun target list');
+        }
+      });
+    }
+  });
+
+  robot.respond(/TARGET\sLIST$/i, function(msg) {
+    ipuhubot_target.list(function(targets) {
+      var message = '';
+      _.each(targets, function(target, user) {
+        message = message + printf('%s: %s', user, target.title);
+      });
+      msg.send(message);
+    });
   });
 
   robot.respond(/TENKI(\s(.+))*$/i, function(msg) {
@@ -91,7 +114,6 @@ module.exports = function(robot) {
     key = msg.match[1];
 
     hachipi.show(key, function(result) {
-      console.log(result);
       if (result) {
         var message = '';
         _.each(result.answers, function(answer, user) {
