@@ -10,6 +10,7 @@
 var tenki = require('../src/class/ipuhubot-tenki');
 var hachipi = require('../src/class/ipuhubot-hachipi');
 var ipuhubot_target = require('../src/class/ipuhubot-target');
+var ipuhubot_qiita = require('../src/class/ipuhubot-qiita');
 var printf = require('printf');
 var request = require('request');
 var cheerio = require('cheerio-httpcli');
@@ -33,6 +34,59 @@ module.exports = function(robot) {
     key = msg.random(Object.keys(users));
     user = users[key].name;
     msg.send(user + ": YO!");
+  });
+
+  robot.respond(/QIITA\sENTRY(\s(.+))*$/i, function(msg) {
+    var user = msg.message.user.name;
+    var qiita_user = user;
+    if (msg.match[2]) {
+      qiita_user = msg.match[2];
+    }
+    ipuhubot_qiita.entry(user, qiita_user, function(result) {
+      if (result.status == 'success') {
+        msg.send('Qiita Battle にエントリーしたよ!');
+      }
+    });
+  });
+
+  robot.respond(/QIITA\sBATTLE$/i, function(msg) {
+    var user = msg.message.user.name;
+    ipuhubot_qiita.battle(user, function(result) {
+      if (result.status == 'success') {
+        var message = '';
+        if (result.my_item.stock_count > result.enemy_item.stock_count) {
+          message = printf('[winner:%s] %s: %s\n[loser:%s] %s: %s',
+              result.my_item.stock_count,
+              result.my_user.name,
+              result.my_item.title,
+              result.enemy_item.stock_count,
+              result.enemy_user.name,
+              result.enemy_item.title
+          );
+        } else if (result.my_item.stock_count < result.enemy_item.stock_count) {
+          message = printf('[loser:%s] %s: %s\n[winner:%s] %s: %s',
+              result.my_item.stock_count,
+              result.my_user.name,
+              result.my_item.title,
+              result.enemy_item.stock_count,
+              result.enemy_user.name,
+              result.enemy_item.title
+          );
+        } else {
+          message = printf('[draw:%s] %s: %s\n[draw:%s] %s: %s',
+              result.my_item.stock_count,
+              result.my_user.name,
+              result.my_item.title,
+              result.enemy_item.stock_count,
+              result.enemy_user.name,
+              result.enemy_item.title
+          );
+        }
+        msg.send(message);
+      } else {
+        msg.send(result.message);
+      }
+    });
   });
 
   robot.respond(/TARGET\sSET\s(.+)*$/i, function(msg) {
