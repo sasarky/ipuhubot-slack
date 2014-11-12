@@ -26,15 +26,6 @@ Qiita.prototype.entry =  function(user, qiita_user, callback) {
     if (val) {
       users = JSON.parse(val);
     }
-    // すでにエントリーしていた時
-    if (users[user]) {
-      var result = {
-        status: 'failed',
-        message: 'user is already entried'
-      }
-      callback(result);
-      return;
-    }
     users[user] = {
       name: user,
       qiita_user: qiita_user
