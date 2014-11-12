@@ -47,56 +47,83 @@ Qiita.prototype.entry =  function(user, qiita_user, callback) {
   });
 };
 
-Qiita.prototype.battle =  function(user, callback) {
+Qiita.prototype.getEntryUsers = function(callback) {
   key = 'hubot:qiita:users';
   client.get(key, function(err, val) {
-    if (val) {
-      var users = JSON.parse(val);
-      if (!users[user]) {
-        var result = {
-          status: 'failed',
-          message: 'not entry'
-        };
-        callback(result);
-        return;
-      }
-      // 自分は除く
-      var my_user = users[user];
-      delete(users[user]);
-      if (Object.keys(users).length == 0) {
-        var result = {
-          status: 'failed',
-          message: 'not entry'
-        };
-        callback(result);
-        return;
-      }
-      var enemy_user = _.sample(users);
-      var qiita_api = printf('https://qiita.com/api/v1/users/%s/items', my_user.qiita_user);
-      request.get(qiita_api, function(err, res, body) {
-        my_item = _.sample(JSON.parse(body));
+    callback(JSON.parse(val));
+  });
+};
 
-        var qiita_api = printf('https://qiita.com/api/v1/users/%s/items', enemy_user.qiita_user);
-        request.get(qiita_api, function(err, res, body) {
-          enemy_item = _.sample(JSON.parse(body));
-
-          var result = {
-            status: 'success',
-            my_user: my_user,
-            my_item: my_item,
-            enemy_user: enemy_user,
-            enemy_item: enemy_item
-          }
-          callback(result);
-        });
-      });
-    } else {
-      var result = {
+Qiita.prototype.getUser = function(name, callback) {
+  Qiita.prototype.getEntryUsers(function(users) {
+    // {{{ validation
+    // user が誰も居ない時
+    if (!users) {
+      callback({
         status: 'failed',
-        message: 'no entry'
-      };
-      callback(result);
+        message: 'not entry'
+      });
+      return;
     }
+
+    // 自分が entry していない時 (method にしてもいいかも)
+    if (!users[name]) {
+      callback({
+        status: 'failed',
+        message: 'not entry'
+      });
+      return;
+    }
+    // }}}
+
+    callback(users[name]);
+  });
+};
+
+Qiita.prototype.selectEnemyUser = function(user, callback) {
+  Qiita.prototype.getEntryUsers(function(users) {
+    // {{{ validation
+    // user が誰も居ない時
+    if (!users) {
+      callback({
+        status: 'failed',
+        message: 'not entry'
+      });
+      return;
+    }
+
+    // 自分が entry していない時 (method にしてもいいかも)
+    if (!users[user]) {
+      callback({
+        status: 'failed',
+        message: 'not entry'
+      });
+      return;
+    }
+    // 自分は除く
+    var my_user = users[user];
+    delete(users[user]);
+
+    // 自分以外がエントリーしていないとき
+    if (Object.keys(users).length == 0) {
+      callback({
+        status: 'failed',
+        message: 'not entry'
+      });
+      return;
+    }
+    // }}}
+
+    // ランダムで選ぶ
+    callback(_.sample(users));
+  });
+};
+
+Qiita.prototype.getItem = function(user, callback) {
+  var qiita_name = user.qiita_user;
+  var qiita_api = printf('https://qiita.com/api/v1/users/%s/items', qiita_name);
+  request.get(qiita_api, function(err, res, body) {
+    callback(_.sample(JSON.parse(body)));
   });
 };
 

@@ -50,42 +50,29 @@ module.exports = function(robot) {
   });
 
   robot.respond(/QIITA\sBATTLE$/i, function(msg) {
-    var user = msg.message.user.name;
-    ipuhubot_qiita.battle(user, function(result) {
-      if (result.status == 'success') {
-        var message = '';
-        if (result.my_item.stock_count > result.enemy_item.stock_count) {
-          message = printf('[winner:%s] %s: %s\n[loser:%s] %s: %s',
-              result.my_item.stock_count,
-              result.my_user.name,
-              result.my_item.title,
-              result.enemy_item.stock_count,
-              result.enemy_user.name,
-              result.enemy_item.title
-          );
-        } else if (result.my_item.stock_count < result.enemy_item.stock_count) {
-          message = printf('[loser:%s] %s: %s\n[winner:%s] %s: %s',
-              result.my_item.stock_count,
-              result.my_user.name,
-              result.my_item.title,
-              result.enemy_item.stock_count,
-              result.enemy_user.name,
-              result.enemy_item.title
-          );
-        } else {
-          message = printf('[draw:%s] %s: %s\n[draw:%s] %s: %s',
-              result.my_item.stock_count,
-              result.my_user.name,
-              result.my_item.title,
-              result.enemy_item.stock_count,
-              result.enemy_user.name,
-              result.enemy_item.title
-          );
-        }
-        msg.send(message);
-      } else {
-        msg.send(result.message);
-      }
+    var user_name = msg.message.user.name;
+    ipuhubot_qiita.getUser(user_name, function(user) {
+      ipuhubot_qiita.selectEnemyUser(user_name, function(enemy) {
+        ipuhubot_qiita.getItem(user, function(my_item) {
+          ipuhubot_qiita.getItem(enemy, function(enemy_item) {
+            if (my_item.stock_count > enemy_item.stock_count) {
+              user.battle_result = 'winner';
+              enemy.battle_result = 'loser';
+            } else if (my_item.stock_count < enemy_item.stock_count) {
+              user.battle_result = 'loser';
+              enemy.battle_result = 'winner';
+            } else {
+              user.battle_result = 'draw';
+              enemy.battle_result = 'draw';
+            }
+            msg.send(printf(
+              '[%s : %s] %s : %s ( %s )\n[%s : %s] %s : %s ( %s )',
+              user.battle_result, my_item.stock_count, user.name, my_item.title, my_item.url,
+              enemy.battle_result, enemy_item.stock_count, enemy.name, enemy_item.title, enemy_item.url
+            ));
+          });
+        });
+      });
     });
   });
 
