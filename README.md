@@ -10,7 +10,9 @@ Slack の IPU でうごいている ipukun のための hubot script です
 ## 開発の流れ
 ### feature branch 作成
 master branch の派生で作成してください
+```
 git checkout -b feature/hogefuga
+```
 
 ### ごりごり作る
 \.js でも \.coffee でもどっちでもいいです  
