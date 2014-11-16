@@ -11,6 +11,8 @@ var tenki = require('../src/class/ipuhubot-tenki');
 var hachipi = require('../src/class/ipuhubot-hachipi');
 var ipuhubot_target = require('../src/class/ipuhubot-target');
 var ipuhubot_qiita = require('../src/class/ipuhubot-qiita');
+
+var async = require('async');
 var printf = require('printf');
 var request = require('request');
 var cheerio = require('cheerio-httpcli');
@@ -185,12 +187,18 @@ module.exports = function(robot) {
 
   robot.respond(/ROOMS$/i, function(msg) {
     client.get('hubot:room_talk_count', function(err, val) {
-      val = JSON.parse(val);
-      var message = '';
-      _.map(val, function(count, room_name) {
-        message = printf('%s: %s\n', room_name, count);
+      async.waterfall([
+        function(callback) {
+          val = JSON.parse(val);
+          var message = '';
+          _.map(val, function(count, room_name) {
+            message = printf('%s: %s\n', room_name, count);
+          });
+          callback(message);
+        },
+      ], function(message) {
+        msg.send(message);
       });
-      msg.send(message);
     });
 
   });
