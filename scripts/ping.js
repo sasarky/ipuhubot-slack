@@ -187,17 +187,9 @@ module.exports = function(robot) {
 
   robot.respond(/ROOMS$/i, function(msg) {
     client.get('hubot:room_talk_count', function(err, val) {
-      async.waterfall([
-        function(callback) {
-          val = JSON.parse(val);
-          var message = '';
-          _.map(val, function(count, room_name) {
-            message = printf('%s: %s\n', room_name, count);
-          });
-          callback(message);
-        },
-      ], function(message) {
-        msg.send(message);
+      val = JSON.parse(val);
+      _.map(val, function(count, room_name) {
+        msg.send(printf('%s: %s', room_name, count));
       });
     });
 
