@@ -186,9 +186,11 @@ module.exports = function(robot) {
   robot.respond(/ROOMS$/i, function(msg) {
     client.get('hubot:room_talk_count', function(err, val) {
       val = JSON.parse(val);
+      var message = '';
       _.map(val, function(count, room_name) {
-        msg.send(room_name + ": " + count);
+        message = printf('%s: %s\n', room_name, count);
       });
+      msg.send(message);
     });
 
   });
