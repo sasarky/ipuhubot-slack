@@ -35,7 +35,7 @@ module.exports = function(robot) {
       } else {
         send("#general", printf('%s by %s\n%s', body.meigen, body.author, body.image));
       }
-    })
+    });
   }).start();
 
   new cronJob('0 0 12 * * 1,2,3,4,5', function() {

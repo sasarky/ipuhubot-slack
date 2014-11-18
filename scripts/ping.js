@@ -228,48 +228,8 @@ module.exports = function(robot) {
     robot.messageRoom(room, kotoba);
   });
 
-  robot.hear(/nemui|眠い/, function(msg) {
-    msg.send('無理しないで寝よっ！');
-  });
-
-  robot.hear(/疲れた|つかれた/, function(msg) {
-    msg.send('お疲れ様！ https://raw.githubusercontent.com/sasarky/ipuhubot/master/images/99.png');
-  });
-
-  robot.hear(/ひま|暇/, function(msg) {
-    request.get("https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&q=http://b.hatena.ne.jp/hotentry/it.rss", function(error, response, body) {
-      if (response.statusCode == 200) {
-        data = msg.random(JSON.parse(body).responseData.feed.entries)
-        msg.send("これでも読んでみたら？\n " + data.title + "\n" + data.link)
-      } else {
-        msg.send('error');
-      }
-    });
-  });
-
   robot.respond(/AME$/i, function(msg) {
     msg.send("http://agora.ex.nii.ac.jp/digital-typhoon/radar/graphics/east-i.jpg");
-  });
-
-  robot.respond(/ohayo$/i, function(msg) {
-    msg.send("おはよう!");
-  });
-
-  robot.hear(/^(.*\s)?(\w*)([\+|\-]{2})$/i, function(msg) {
-    if (msg.match[1]) {
-      user = msg.match[1].replace(/[\s|\:]/g, '');
-    } else {
-      user = msg.message.user.name;
-    }
-    word = msg.match[2];
-    op = msg.match[3][0]
-    key = printf("hubot:%s:%s", word, user);
-    client.get(key, function(err, val) {
-      expression = printf("lv = %d %s %d", Number(val), op, 1);
-      eval(expression);
-      msg.send(printf("%s の %s LV : %d", user, word, lv));
-      client.set(key, lv);
-    });
   });
 
   /* 一時停止
@@ -286,16 +246,6 @@ module.exports = function(robot) {
   });
   */
 
-  robot.respond(/EVENT\s(.*)$/i, function(msg) {
-    d = new Date;
-    ym = printf('%d%02d', d.getYear()+ 1900, d.getMonth() + 1);
-    key = printf('http://connpass.com/api/v1/event/?keyword=%s&ym=%s', msg.match[1], ym);
-    request.get(key, function(error, response, body) {
-      event = msg.random(JSON.parse(body).events);
-      msg.send(printf("%s ( %s )", event.title, event.event_url));
-    });
-  });
-
   robot.respond(/QIITA\sRANK$/i, function(msg) {
     users = ['sasarkyz', '7kaji', 'otukutun', 'isseium', 'n0bisuke', 'te2ka', 's4shiki', 'canno', 'ganezasan'];
     users.forEach(function(user) {
@@ -308,7 +258,8 @@ module.exports = function(robot) {
   });
 
   robot.respond(/zekkei$/i, function(msg) {
-    request.get("http://zekkei-switch.herokuapp.com/locations/fetch_location.json", function(error, response, body) {
+    var url = "http://zekkei-switch.herokuapp.com/locations/fetch_location.json";
+    request.get(url, function(error, response, body) {
       if (response.statusCode == 200) {
         data = JSON.parse(body);
         msg.send(printf("%s\n%s\n%s", data.name, data.description, data.photo));
