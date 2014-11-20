@@ -27,8 +27,7 @@ module.exports = function(robot) {
   // }}}
 
   // {{{ WeekDay
-  new cronJob('0 0 9 * * 1,2,3,4,5', function() {
-    send("#general", "https://qiita-image-store.s3.amazonaws.com/0/29945/9e4bd52c-3fc3-a7c2-e8d2-b9911db5b5c8.png");
+  new cronJob('0 30 8 * * *', function() {
     meigen.get('', function(body) {
       if (body == 'error') {
         send("#general", "No meigen No Life");
@@ -36,6 +35,10 @@ module.exports = function(robot) {
         send("#general", printf('%s by %s\n%s', body.meigen, body.author, body.image));
       }
     });
+  }).start();
+
+  new cronJob('0 5 0 * * 1,2,3,4,5', function() {
+    send("#general", "https://qiita-image-store.s3.amazonaws.com/0/29945/9e4bd52c-3fc3-a7c2-e8d2-b9911db5b5c8.png");
   }).start();
 
   new cronJob('0 0 12 * * 1,2,3,4,5', function() {
