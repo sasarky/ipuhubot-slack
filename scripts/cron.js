@@ -5,6 +5,7 @@
 var cronJob = require('cron').CronJob;
 var meigen = require('../src/class/ipuhubot-meigen');
 var tenki = require('../src/class/ipuhubot-tenki');
+var ipuhubot_room = require('../src/class/ipuhubot-room');
 var printf = require('printf');
 var github = require('githubot');
 var _ = require('underscore');
@@ -24,6 +25,10 @@ module.exports = function(robot) {
       send("#general", view_msg);
     });
   }).start();
+
+  new cronJob('59 59 23 * * *', function() {
+    ipuhubot_room.harfCount();
+  }).start();
   // }}}
 
   // {{{ WeekDay
@@ -37,7 +42,7 @@ module.exports = function(robot) {
     });
   }).start();
 
-  new cronJob('0 5 0 * * 1,2,3,4,5', function() {
+  new cronJob('0 0 9 * * 1,2,3,4,5', function() {
     send("#general", "https://qiita-image-store.s3.amazonaws.com/0/29945/9e4bd52c-3fc3-a7c2-e8d2-b9911db5b5c8.png");
   }).start();
 

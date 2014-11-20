@@ -169,32 +169,6 @@ module.exports = function(robot) {
     });
   });
 
-  robot.hear(/.*/i, function(msg) {
-    room = msg.message.room;
-    client.get('hubot:room_talk_count', function(err, val) {
-      val = JSON.parse(val);
-      if (val == null) {
-        val = {};
-      }
-      if (val[room] == null) {
-        val[room] = 1;
-      } else {
-        val[room]++;
-      }
-      client.set('hubot:room_talk_count', JSON.stringify(val));
-    });
-  });
-
-  robot.respond(/ROOMS$/i, function(msg) {
-    client.get('hubot:room_talk_count', function(err, val) {
-      val = JSON.parse(val);
-      _.map(val, function(count, room_name) {
-        msg.send(printf('%s: %s', room_name, count));
-      });
-    });
-
-  });
-
   robot.hear(/kikkake$/i, function(msg) {
     var url = 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&q=http://rss.dailynews.yahoo.co.jp/fc/rss.xml&num=10'
     request.get(url, function(err, res, body) {
